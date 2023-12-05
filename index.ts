@@ -19,8 +19,8 @@ mongoose
   } as ConnectOptions)
   .then(() => {
     console.log('Connected to DB');
-    app.listen(process.env.PORT, () => {
-      console.log(`Server is running on port ${process.env.PORT}`);
+    app.listen(process.env.LOCAL_PORT, () => {
+      console.log(`Server is running on port ${process.env.LOCAL_PORT}`);
     });
   })
   .catch((err) => {

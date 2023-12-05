@@ -1,8 +1,24 @@
 version: '3.9'
 services:
+  app-backend:
+    depends_on:
+      - mongodb
+    container_name: app_backend_vocab
+    build: .
+    ports:
+      - '${LOCAL_PORT}:${LOCAL_PORT}'
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    # volumes:
+    #   - .:/app
+    command: bun start
+    restart: unless-stopped
+
   mongodb:
     image: mongo:7
-    container_name: mongodb_backend_vocab
+    container_name: mongodb_vocab
     ports:
       - 27017:27017
     environment:
@@ -11,16 +27,3 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=ngoc25
     # volumes:
     #   - mongodb-data:/data/db
-
-  app-backend:
-    depends_on:
-      - mongodb
-    container_name: app_backend_vocab
-    build: .
-    ports:
-      - '4030:4030'
-    environment:
-      - NODE_ENV=development
-    # volumes:
-    #   - .:/app
-    command: npm start
