@@ -1,6 +1,8 @@
+import { Request, Response } from 'express';
 import { CommentModel } from '../models/Comment.models.js';
+import { handleError } from '../utils/index.js';
 
-export const getAllComment = async (req, res) => {
+export const getAllComment = async (req: Request, res: Response) => {
   try {
     const result = await CommentModel.find()
       .select('-product -_id -__v')
@@ -8,24 +10,23 @@ export const getAllComment = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(err, res);
   }
 };
 
-export const getComment = async (req, res) => {
+export const getComment = async (req: Request, res: Response) => {
   try {
     const result = await CommentModel.find({ product: req.params.id })
       .sort({ createdAt: -1 })
       .select('-product -_id -__v')
       .populate('userId');
-
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(err, res);
   }
 };
 
-export const addToComment = async (req, res) => {
+export const addToComment = async (req: Request, res: Response) => {
   try {
     const result = new CommentModel({
       userId: req.body.id,
@@ -36,11 +37,11 @@ export const addToComment = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(err, res);
   }
 };
 
-export const updateToComment = async (req, res) => {
+export const updateToComment = async (req: Request, res: Response) => {
   try {
     const result = await CommentModel.findByIdAndUpdate(req.params.id, {
       content: req.body.content,
@@ -49,16 +50,16 @@ export const updateToComment = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(err, res);
   }
 };
 
-export const removeToComment = async (req, res) => {
+export const removeToComment = async (req: Request, res: Response) => {
   try {
     const result = await CommentModel.findByIdAndRemove(req.params.id);
 
     res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    handleError(err, res);
   }
 };
