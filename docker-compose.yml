@@ -13,7 +13,7 @@ services:
       - .env
     environment:
       NODE_ENV: ${NODE_ENV}
-      DATABASE_URL: ${DATABASE_URL}
+      DOCKER_MONGO_URL: ${DOCKER_MONGO_URL}
     restart: unless-stopped
 
   mongodb:

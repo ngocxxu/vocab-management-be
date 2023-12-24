@@ -13,11 +13,10 @@ COPY . .
 ENV NODE_ENV=development
 
 # ARG DATABASE_URL
-# ENV DATABASE_URL $DATABASE_URL
-ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster.mongodb.net/vocab_management_db?retryWrites=true&w=majority
+ENV DATABASE_URL $DATABASE_URL
 
 # Expose the app's port
-# EXPOSE 8000
+# EXPOSE 4030
 ARG LOCAL_PORT
 EXPOSE ${LOCAL_PORT}
 
