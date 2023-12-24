@@ -17,7 +17,7 @@ ENV NODE_ENV=development
 ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster.mongodb.net/vocab_management_db?retryWrites=true&w=majority
 
 # Expose the app's port
-# EXPOSE 3000
+# EXPOSE 8000
 ARG LOCAL_PORT
 EXPOSE ${LOCAL_PORT}
 
