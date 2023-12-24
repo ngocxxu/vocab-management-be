@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CommentModel } from '../models/Comment.models.js';
-import { handleError } from '../utils/index.js';
+import { CommentModel } from '../models/Comment.models.ts';
+import { handleError } from '../utils/index.ts';
 
 export const getAllComment = async (req: Request, res: Response) => {
   try {
@@ -56,7 +56,7 @@ export const updateToComment = async (req: Request, res: Response) => {
 
 export const removeToComment = async (req: Request, res: Response) => {
   try {
-    const result = await CommentModel.findByIdAndRemove(req.params.id);
+    const result = await CommentModel.findByIdAndDelete(req.params.id);
 
     res.status(200).json(result);
   } catch (err) {

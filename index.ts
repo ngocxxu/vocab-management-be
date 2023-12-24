@@ -2,7 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose, { ConnectOptions } from 'mongoose';
-import comment from './app/routers/Comment.routers.js';
+import comment from './app/routers/Comment.routers.ts';
 dotenv.config({ path: './.env' });
 const app = express();
 

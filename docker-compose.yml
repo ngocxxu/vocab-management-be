@@ -3,18 +3,17 @@ services:
   app-backend:
     depends_on:
       - mongodb
-    image: mybun
     container_name: app_backend_vocab
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - '${LOCAL_PORT}:${LOCAL_PORT}'
     env_file:
       - .env
     environment:
-      - NODE_ENV=development
-    # volumes:
-    #   - .:/app
-    command: bun run start
+      NODE_ENV: ${NODE_ENV}
+      DOCKER_MONGO_URL: ${DOCKER_MONGO_URL}
     restart: unless-stopped
 
   mongodb:
@@ -23,8 +22,5 @@ services:
     ports:
       - 27017:27017
     environment:
-      # - MONGO_INITDB_DATABASE=${DB_NAME}
-      - MONGO_INITDB_ROOT_USERNAME=bono
-      - MONGO_INITDB_ROOT_PASSWORD=ngoc25
-    # volumes:
-    #   - mongodb-data:/data/db
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}

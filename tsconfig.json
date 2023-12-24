@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
+    "moduleResolution": "node",
     "module": "commonjs",
     "lib": ["es6"],
     "allowJs": true,
-    "outDir": "build",
-    "rootDir": "app",
-    "strict": true,
-    "noImplicitAny": true,
+    "outDir": "./build",
+    "rootDir": "./app",
+    "baseUrl": "./app",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true
+  },
+  "ts-node": {
+    // Tell ts-node CLI to install the --loader automatically
+    "esm": true
   }
 }
