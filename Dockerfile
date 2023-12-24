@@ -10,9 +10,9 @@ RUN bun install
 COPY . .
 
 # Expose the app's port
-# EXPOSE 4030
+# EXPOSE 3000
 ARG PORT
-EXPOSE ${PORT:-4030}
+EXPOSE ${PORT:-3000}
 
 # Start the app
 CMD ["bun", "run" "start"]
