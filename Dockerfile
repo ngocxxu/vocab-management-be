@@ -9,17 +9,17 @@ RUN npm install
 # Copy the rest of the application's files to the container
 COPY . .
 
+# Set up access Mongo Atlas
+ENV NODE_ENV=development
+
+# ARG DATABASE_URL
+# ENV DATABASE_URL $DATABASE_URL
+ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster.mongodb.net/vocab_management_db?retryWrites=true&w=majority
+
 # Expose the app's port
 # EXPOSE 3000
 ARG LOCAL_PORT
 EXPOSE ${LOCAL_PORT}
-
-# Set up access Mongo Atlas
-ENV NODE_ENV=development
-
-ARG DATABASE_URL
-ENV DATABASE_URL $DATABASE_URL
-# ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster0.rbdq7.mongodb.net/vocab_management_db
 
 # Start the app
 CMD npm run dev
