@@ -14,5 +14,9 @@ COPY . .
 ARG LOCAL_PORT
 EXPOSE ${LOCAL_PORT}
 
+# Set up access Mongo Atlas
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 # Start the app
 CMD npm run dev
