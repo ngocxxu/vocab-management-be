@@ -15,8 +15,8 @@ ARG LOCAL_PORT
 EXPOSE ${LOCAL_PORT}
 
 # Set up access Mongo Atlas
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
+ENV NODE_ENV=development
+ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster0.rbdq7.mongodb.net/vocab_management_db
 
 # Start the app
 CMD npm run dev
