@@ -19,7 +19,7 @@ mongoose
   )
   .then(() => {
     console.log('Connected to DB');
-    app.listen(process.env.LOCAL_PORT, () => {
+    app.listen(4030, () => {
       console.log(`Server is running on port 4030`);
     });
   })
