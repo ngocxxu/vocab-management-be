@@ -11,7 +11,6 @@ app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
 app.use('/api/comment', comment);
-// console.log('env: ', process.env.DATABSE_URL);
 mongoose
   .connect(
     // process.env.DATABASE_URL ??
