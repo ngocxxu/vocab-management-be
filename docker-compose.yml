@@ -1,8 +1,8 @@
 version: '3.9'
 services:
   app-backend:
-    depends_on:
-      - mongodb
+    # depends_on:
+    #   - mongodb
     container_name: app_backend_vocab
     build:
       context: .
@@ -15,12 +15,11 @@ services:
       NODE_ENV: ${NODE_ENV}
       DOCKER_MONGO_URL: ${DOCKER_MONGO_URL}
     restart: unless-stopped
-
-  mongodb:
-    image: mongo:7
-    container_name: mongodb_vocab
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+# No need use mongodb because we use mongo atlas available
+# mongodb:
+#   image: mongo:7
+#   container_name: mongodb_vocab
+#   ports:
+#     - 27019:27017
+#   env_file:
+#     - .env
