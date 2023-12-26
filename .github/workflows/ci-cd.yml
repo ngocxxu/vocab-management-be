@@ -21,3 +21,10 @@ jobs:
 
       - name: Push the Docker image to Docker Hub
         run: docker push ngocxxu/vocab-management:latest
+
+      - name: Install and configure the Koyeb CLI
+        uses: koyeb-community/install-koyeb-cli@v2
+        with:
+          api_token: '${{ secrets.KOYEB_TOKEN }}'
+      - name: Deploy to Koyeb
+        run: koyeb service redeploy vocab-management/vocab-management
