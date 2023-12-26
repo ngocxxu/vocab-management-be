@@ -27,4 +27,4 @@ jobs:
         with:
           api_token: '${{ secrets.KOYEB_TOKEN }}'
       - name: Deploy to Koyeb
-        run: koyeb service redeploy vocab-management/vocab-management
+        run: koyeb service redeploy server/vocab-management
