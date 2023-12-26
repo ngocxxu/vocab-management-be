@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "ESNext",
     "moduleResolution": "node",
-    "module": "commonjs",
-    "lib": ["es6"],
-    "allowJs": true,
-    "outDir": "./build",
-    "rootDir": "./app",
-    "baseUrl": "./app",
+    "module": "ESNext",
+    "outDir": "build",
+    "rootDir": "app",
+    "baseUrl": "app",
+    "sourceMap": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true
   },
   "ts-node": {
-    // Tell ts-node CLI to install the --loader automatically
-    "esm": true
-  }
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["./app/**/*"],
+  "exclude": ["node_module"]
 }

@@ -13,7 +13,7 @@ services:
       - .env
     environment:
       NODE_ENV: ${NODE_ENV}
-      DOCKER_MONGO_URL: ${DOCKER_MONGO_URL}
+      DATABASE_URL: ${DATABASE_URL}
     restart: unless-stopped
 # No need use mongodb because we use mongo atlas available
 # mongodb:
