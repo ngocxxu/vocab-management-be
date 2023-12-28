@@ -2,8 +2,8 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import comment from './app/routers/Comment.routers.ts';
-import vocab from './app/routers/Vocab.routers.ts';
+import comment from './app/routers/Comment.routers';
+import vocab from './app/routers/Vocab.routers';
 
 dotenv.config();
 

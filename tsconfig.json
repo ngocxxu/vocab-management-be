@@ -8,8 +8,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true
+    "allowSyntheticDefaultImports": true
   },
   "ts-node": {
     "esm": true,

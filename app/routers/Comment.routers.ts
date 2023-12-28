@@ -5,7 +5,7 @@ import {
   addToComment,
   getComment,
   getAllComment,
-} from '../controllers/Comment.controllers.ts';
+} from '../controllers/Comment.controllers';
 
 const router = express.Router();
 

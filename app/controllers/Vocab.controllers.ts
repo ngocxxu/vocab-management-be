@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { handleError } from '../utils/index.ts';
-import { VocabModel } from '../models/Vocab.models.ts';
+import { handleError } from '../utils/index';
+import { VocabModel } from '../models/Vocab.models';
 
 export const getAllVocab = async (req: Request, res: Response) => {
   try {
