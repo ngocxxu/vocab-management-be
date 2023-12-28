@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import comment from './app/routers/Comment.routers.ts';
+import vocab from './app/routers/Vocab.routers.ts';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
 app.use('/api/comment', comment);
+app.use('/api/vocab', vocab);
 
 mongoose
   .connect(process.env.DATABASE_URL || '')

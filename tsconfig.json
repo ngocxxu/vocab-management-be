@@ -5,7 +5,6 @@
     "module": "ESNext",
     "outDir": "build",
     "rootDir": "app",
-    "baseUrl": "app",
     "sourceMap": true,
     "noImplicitAny": true,
     "esModuleInterop": true,

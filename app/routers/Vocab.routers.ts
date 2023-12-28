@@ -4,7 +4,7 @@ import {
   addVocab,
   getVocab,
   getAllVocab,
-} from 'controllers/Vocab.controllers';
+} from '../controllers/Vocab.controllers.ts';
 import express from 'express';
 
 const router = express.Router();
