@@ -12,22 +12,23 @@ const itemTextTarget = new mongoose.Schema({
   },
   explanationSource: {
     type: String,
-    required: true,
+    default: '',
   },
   explanationTarget: {
     type: String,
-    required: true,
+    default: '',
   },
   exampleSource: {
     type: String,
-    required: true,
+    default: '',
   },
   exampleTarget: {
     type: String,
-    required: true,
+    default: '',
   },
   grammar: {
     type: String,
+    default: '',
   },
   subject: {
     type: String,
