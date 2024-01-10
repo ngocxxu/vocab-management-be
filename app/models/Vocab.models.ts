@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+const itemExample = new mongoose.Schema({
+  source: {
+    type: String,
+    default: '',
+  },
+  target: {
+    type: String,
+    default: '',
+  },
+});
+
 // define type children schema in array
 const itemTextTarget = new mongoose.Schema({
   text: {
@@ -18,20 +29,16 @@ const itemTextTarget = new mongoose.Schema({
     type: String,
     default: '',
   },
-  exampleSource: {
-    type: String,
-    default: '',
-  },
-  exampleTarget: {
-    type: String,
-    default: '',
+  examples: {
+    type: [itemExample],
+    default: [],
   },
   grammar: {
     type: String,
     default: '',
   },
   subject: {
-    type: String,
+    type: [String],
     required: true,
   },
 });

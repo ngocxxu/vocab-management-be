@@ -1,0 +1,44 @@
+{
+  "sourceLanguage": "ko",
+  "targetLanguage": "vi",
+  "textSource": "다루다",
+  "textTarget": [
+    {
+      "text": "làm",
+      "wordType": "Động từ",
+      "explanationSource": "어떤 것을 일거리로 삼다.",
+      "explanationTarget": "Lấy điều gì đó làm công việc.",
+      "examples": [
+        {
+          "source": "민준은 쇠를 다루는 일을 하기 때문에 손이 거칠었다.",
+          "target": "Minjun có bàn tay thô ráp vì anh ấy làm việc với kim loại."
+        },
+        {
+          "source": "업무를 다루다.",
+          "target": "Giải quyết công việc"
+        }
+      ],
+      "grammar": "1이 2를 다루다",
+      "subject": [
+        "sale",
+        "job"
+      ]
+    },
+    {
+      "text": "buôn bán, mua bán",
+      "wordType": "Động từ",
+      "explanationSource": "어떤 물건을 사고파는 일을 하다.",
+      "explanationTarget": "Làm công việc mua và bán hàng hóa nào đó.",
+      "examples": [
+        {
+          "source": "이 동네에는 한약재를 다루는 시장이 있다.",
+          "target": "Khu phố này có một khu chợ bán thuốc thảo dược."
+        }
+      ],
+      "grammar": "1이 2를 다루다",
+      "subject": [
+        "sale"
+      ]
+    }
+  ]
+}
