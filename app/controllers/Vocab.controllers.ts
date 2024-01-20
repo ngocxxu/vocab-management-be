@@ -4,9 +4,29 @@ import { VocabModel } from '../models/Vocab.models';
 
 export const getAllVocab = async (req: Request, res: Response) => {
   try {
-    const result = await VocabModel.find();
+    const { page = 1, limit = 10 } = req.query;
 
-    res.status(200).json(result);
+    // Chuyển đổi page và limit sang kiểu số
+    const pageNumber: number = parseInt(page as string, 10);
+    const limitNumber: number = parseInt(limit as string, 10);
+
+    // Kiểm tra nếu pageNumber không phải là số
+    if (isNaN(pageNumber)) {
+      throw new Error('Invalid page number');
+    }
+
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const data = await VocabModel.find().skip(skip).limit(limitNumber);
+    const totalCount = await VocabModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limitNumber);
+
+    res.status(200).json({
+      data,
+      totalPages,
+      currentPage: pageNumber,
+      totalItems: totalCount,
+    });
   } catch (err) {
     handleError(err, res);
   }
