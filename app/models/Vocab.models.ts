@@ -11,6 +11,17 @@ const itemExample = new mongoose.Schema({
   },
 });
 
+const itemSubject = new mongoose.Schema({
+  label: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: String,
+    required: true,
+  },
+});
+
 // define type children schema in array
 const itemTextTarget = new mongoose.Schema({
   text: {
@@ -38,7 +49,7 @@ const itemTextTarget = new mongoose.Schema({
     default: '',
   },
   subject: {
-    type: [String],
+    type: [itemSubject],
     required: true,
   },
 });

@@ -20,24 +20,14 @@
       ],
       "grammar": "1이 2를 다루다",
       "subject": [
-        "sale",
-        "job"
-      ]
-    },
-    {
-      "text": "buôn bán, mua bán",
-      "wordType": "Động từ",
-      "explanationSource": "어떤 물건을 사고파는 일을 하다.",
-      "explanationTarget": "Làm công việc mua và bán hàng hóa nào đó.",
-      "examples": [
         {
-          "source": "이 동네에는 한약재를 다루는 시장이 있다.",
-          "target": "Khu phố này có một khu chợ bán thuốc thảo dược."
+          "label": "Career (Nghề nghiệp)",
+          "value": "Career"
+        },
+        {
+          "label": "Clothing (Quần áo)",
+          "value": "Clothing"
         }
-      ],
-      "grammar": "1이 2를 다루다",
-      "subject": [
-        "sale"
       ]
     }
   ]
