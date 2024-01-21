@@ -17,7 +17,10 @@ export const getAllVocab = async (req: Request, res: Response) => {
 
     const skip = (pageNumber - 1) * limitNumber;
 
-    const data = await VocabModel.find().skip(skip).limit(limitNumber);
+    const data = await VocabModel.find()
+      .skip(skip)
+      .limit(limitNumber)
+      .sort([['updatedAt', 'desc']]);
     const totalCount = await VocabModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limitNumber);
 
@@ -76,6 +79,18 @@ export const updateVocab = async (req: Request, res: Response) => {
 export const removeVocab = async (req: Request, res: Response) => {
   try {
     const result = await VocabModel.findByIdAndDelete(req.params.id);
+
+    res.status(200).json(result);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
+export const removeMultiVocab = async (req: Request, res: Response) => {
+  try {
+    const result = await VocabModel.deleteMany({
+      _id: { $in: req.body },
+    });
 
     res.status(200).json(result);
   } catch (err) {
