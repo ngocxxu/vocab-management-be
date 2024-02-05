@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const itemExample = new mongoose.Schema({
   source: {
     type: String,
-    default: '',
+    default: "",
   },
   target: {
     type: String,
-    default: '',
+    default: "",
   },
 });
 
@@ -34,11 +34,11 @@ const itemTextTarget = new mongoose.Schema({
   },
   explanationSource: {
     type: String,
-    default: '',
+    default: "",
   },
   explanationTarget: {
     type: String,
-    default: '',
+    default: "",
   },
   examples: {
     type: [itemExample],
@@ -46,7 +46,7 @@ const itemTextTarget = new mongoose.Schema({
   },
   grammar: {
     type: String,
-    default: '',
+    default: "",
   },
   subject: {
     type: [itemSubject],
@@ -76,4 +76,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const VocabModel = mongoose.model('Vocab', schema);
+export const VocabModel = mongoose.model("Vocab", schema);

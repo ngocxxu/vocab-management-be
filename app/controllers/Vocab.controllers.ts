@@ -1,26 +1,58 @@
-import { Request, Response } from 'express';
-import { handleError } from '../utils/index';
-import { VocabModel } from '../models/Vocab.models';
+import { Request, Response } from "express";
+import { handleError, searchRegex } from "../utils/index";
+import { VocabModel } from "../models/Vocab.models";
+import { SortOrder } from "mongoose";
 
 export const getAllVocab = async (req: Request, res: Response) => {
   try {
-    const { page = 1, limit = 10 } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      search = "",
+      sortBy = "updatedAt",
+      orderBy = "desc",
+      // statusFilter = [],
+      subjectFilter = [],
+    } = req.query;
+    let subjectFilterCustom = subjectFilter;
 
     // Chuyển đổi page và limit sang kiểu số
-    const pageNumber: number = parseInt(page as string, 10);
-    const limitNumber: number = parseInt(limit as string, 10);
+    const pageNumber: number = parseInt(String(page), 10);
+    const limitNumber: number = parseInt(String(limit), 10);
 
-    // Kiểm tra nếu pageNumber không phải là số
+    // Kiểm tra validation
     if (isNaN(pageNumber)) {
-      throw new Error('Invalid page number');
+      throw new Error("Invalid page number");
+    }
+    if (typeof subjectFilter === "string") {
+      subjectFilterCustom = [subjectFilter];
     }
 
     const skip = (pageNumber - 1) * limitNumber;
 
-    const data = await VocabModel.find()
+    const querySearch = {
+      $or: [
+        { textSource: searchRegex(String(search)) },
+        {
+          textTarget: {
+            $elemMatch: { text: searchRegex(String(search)) },
+          },
+        },
+        {
+          textTarget: {
+            $elemMatch: {
+              subject: { $elemMatch: { value: { $in: subjectFilterCustom } } },
+            },
+          },
+        },
+      ],
+    };
+
+    const data = await VocabModel.find(querySearch)
       .skip(skip)
       .limit(limitNumber)
-      .sort([['updatedAt', 'desc']]);
+      .sort([[`${sortBy}`, orderBy as SortOrder]]);
+
     const totalCount = await VocabModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limitNumber);
 

@@ -1,5 +1,5 @@
-import { Response } from 'express';
-import { Error } from 'mongoose';
+import { Response } from "express";
+import { Error } from "mongoose";
 
 export const handleError = (err: unknown, res: Response) => {
   if (err instanceof Error) {
@@ -8,3 +8,8 @@ export const handleError = (err: unknown, res: Response) => {
     return;
   }
 };
+
+export const searchRegex = (search: string) => ({
+  $regex: `.*${search}.*`,
+  $options: "i",
+});
