@@ -32,11 +32,15 @@ export const getAllVocab = async (req: Request, res: Response) => {
 
     const querySearch = {
       $or: [
-        { textSource: searchRegex(String(search)) },
         {
-          textTarget: {
-            $elemMatch: { text: searchRegex(String(search)) },
-          },
+          $or: [
+            { textSource: searchRegex(String(search)) },
+            {
+              textTarget: {
+                $elemMatch: { text: searchRegex(String(search)) },
+              },
+            },
+          ],
         },
         {
           textTarget: {
@@ -47,7 +51,6 @@ export const getAllVocab = async (req: Request, res: Response) => {
         },
       ],
     };
-
     const data = await VocabModel.find(querySearch)
       .skip(skip)
       .limit(limitNumber)
