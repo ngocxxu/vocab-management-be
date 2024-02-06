@@ -8,7 +8,7 @@ export const getAllVocab = async (req: Request, res: Response) => {
     const {
       page = 1,
       limit = 10,
-      search = "",
+      search,
       sortBy = "updatedAt",
       orderBy = "desc",
       // statusFilter = [],
@@ -16,31 +16,28 @@ export const getAllVocab = async (req: Request, res: Response) => {
     } = req.query;
     let subjectFilterCustom = subjectFilter;
 
-    // Chuyển đổi page và limit sang kiểu số
+    // Convert page & limit to number
     const pageNumber: number = parseInt(String(page), 10);
     const limitNumber: number = parseInt(String(limit), 10);
 
-    // Kiểm tra validation
+    // Check validation
     if (isNaN(pageNumber)) {
       throw new Error("Invalid page number");
     }
     if (typeof subjectFilter === "string") {
       subjectFilterCustom = [subjectFilter];
     }
+    const isExist = search || (subjectFilterCustom as string[]).length > 0;
 
     const skip = (pageNumber - 1) * limitNumber;
 
     const querySearch = {
       $or: [
+        { textSource: searchRegex(String(search)) },
         {
-          $or: [
-            { textSource: searchRegex(String(search)) },
-            {
-              textTarget: {
-                $elemMatch: { text: searchRegex(String(search)) },
-              },
-            },
-          ],
+          textTarget: {
+            $elemMatch: { text: searchRegex(String(search)) },
+          },
         },
         {
           textTarget: {
@@ -51,12 +48,15 @@ export const getAllVocab = async (req: Request, res: Response) => {
         },
       ],
     };
-    const data = await VocabModel.find(querySearch)
+
+    const data = await VocabModel.find(isExist ? querySearch : {})
       .skip(skip)
       .limit(limitNumber)
       .sort([[`${sortBy}`, orderBy as SortOrder]]);
 
-    const totalCount = await VocabModel.countDocuments();
+    const totalCount = isExist
+      ? data.length
+      : await VocabModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limitNumber);
 
     res.status(200).json({
