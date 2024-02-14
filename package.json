@@ -5,20 +5,23 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon index.ts",
-    "dev": "nodemon index.ts",
+    "start": "node app/index.ts",
+    "dev": "nodemon app/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.8.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1"
   },
