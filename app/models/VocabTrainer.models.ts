@@ -7,6 +7,9 @@ const itemWordResult = new mongoose.Schema({
   systemSelect: {
     type: String,
   },
+  status: {
+    type: String,
+  },
 });
 
 const schema = new mongoose.Schema(
@@ -18,7 +21,7 @@ const schema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Vocab",
     },
-    status: {
+    statusTest: {
       type: String,
       default: "Pending",
     },

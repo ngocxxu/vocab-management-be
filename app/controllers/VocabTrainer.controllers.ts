@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { VocabTrainerModel } from "../models/VocabTrainer.models";
 import { TWordResults, TWordTestSelect } from "../types/VocabTrainer.types";
 import { handleError } from "../utils/index";
+import { VocabStatusModel } from "../models/VocabStatus.models";
 
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
@@ -68,11 +69,20 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
         const itemB = wordTestSelects.find(
           (item: TWordTestSelect) => item.idWord === word._id.toString()
         );
-        if (itemB)
+        if (itemB) {
+          const checkStatus =
+            itemB.userSelect === word.textSource ? "Passed" : "Failed";
+          new VocabStatusModel({
+            idVocab: word._id.toString(),
+            status: checkStatus,
+          }).save();
+
           return {
             userSelect: itemB.userSelect,
             systemSelect: word.textSource,
+            status: checkStatus,
           };
+        }
       }
     );
     const countCorrectResults = newWordResults.filter(
@@ -85,7 +95,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
     const result = await VocabTrainerModel.findByIdAndUpdate(req.params.id, {
       $set: {
         duration: req.body.duration,
-        status: statusResult,
+        statusTest: statusResult,
         wordResults: newWordResults,
       },
       $inc: {
