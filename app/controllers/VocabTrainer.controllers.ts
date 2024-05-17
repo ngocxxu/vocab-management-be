@@ -58,7 +58,7 @@ export const updateVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
-export const updateTestVocabTrainer = async (req: Request, res: Response) => {
+export const submitTestVocabTrainer = async (req: Request, res: Response) => {
   try {
     const { wordTestSelects } = req.body;
     const item = await VocabTrainerModel.findById(req.params.id).populate(
@@ -87,12 +87,14 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
         }
       }
     );
+
     const countCorrectResults = newWordResults.filter(
       (item: TWordResults) => item.userSelect === item.systemSelect
     ).length;
+
     const totalResults = newWordResults.length;
     const statusResult =
-      countCorrectResults / totalResults > 0.7 ? 'Passed' : 'Failed';
+      countCorrectResults / totalResults >= 0.7 ? 'Passed' : 'Failed';
 
     const result = await VocabTrainerModel.findByIdAndUpdate(req.params.id, {
       $set: {

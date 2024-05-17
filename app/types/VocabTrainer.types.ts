@@ -1,4 +1,4 @@
-export type TUpdateTestVocabTrainer = {
+export type TsubmitTestVocabTrainer = {
   duration: string;
   wordTestSelects: TWordTestSelect[];
 };
@@ -56,4 +56,4 @@ export type TFormInputsVocabTrainer = {
   wordSelects: string[];
 };
 
-export type TScoreStatus = "Passed" | "Failed";
+export type TScoreStatus = 'Passed' | 'Failed';
