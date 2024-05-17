@@ -1,13 +1,15 @@
-import { ObjectId, ObjectIdLike } from "bson";
-import { Request, Response } from "express";
-import { VocabTrainerModel } from "../models/VocabTrainer.models";
-import { TWordResults, TWordTestSelect } from "../types/VocabTrainer.types";
-import { handleError } from "../utils/index";
-import { VocabStatusModel } from "../models/VocabStatus.models";
+import { ObjectId, ObjectIdLike } from 'bson';
+import { Request, Response } from 'express';
+import { VocabTrainerModel } from '../models/VocabTrainer.models';
+import { TWordResults, TWordTestSelect } from '../types/VocabTrainer.types';
+import { handleError } from '../utils/index';
+import { VocabStatusModel } from '../models/VocabStatus.models';
 
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
-    const result = await VocabTrainerModel.find().populate("wordSelects");
+    const result = await VocabTrainerModel.find().populate('wordSelects').sort({
+      createdAt: -1,
+    });
 
     res.status(200).json(result);
   } catch (err) {
@@ -60,7 +62,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
   try {
     const { wordTestSelects } = req.body;
     const item = await VocabTrainerModel.findById(req.params.id).populate(
-      "wordSelects"
+      'wordSelects'
     );
 
     // Calculation score
@@ -71,7 +73,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
         );
         if (itemB) {
           const checkStatus =
-            itemB.userSelect === word.textSource ? "Passed" : "Failed";
+            itemB.userSelect === word.textSource ? 'Passed' : 'Failed';
           new VocabStatusModel({
             idVocab: word._id.toString(),
             status: checkStatus,
@@ -90,7 +92,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
     ).length;
     const totalResults = newWordResults.length;
     const statusResult =
-      countCorrectResults / totalResults > 0.7 ? "Passed" : "Failed";
+      countCorrectResults / totalResults > 0.7 ? 'Passed' : 'Failed';
 
     const result = await VocabTrainerModel.findByIdAndUpdate(req.params.id, {
       $set: {
