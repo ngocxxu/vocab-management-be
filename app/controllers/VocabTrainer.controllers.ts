@@ -2,16 +2,63 @@ import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import { TWordResults, TWordTestSelect } from '../types/VocabTrainer.types';
-import { handleError } from '../utils/index';
+import { handleError, searchRegex } from '../utils/index';
 import { VocabStatusModel } from '../models/VocabStatus.models';
+import { SortOrder } from 'mongoose';
 
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
-    const result = await VocabTrainerModel.find().populate('wordSelects').sort({
-      createdAt: -1,
-    });
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      sortBy = 'updatedAt',
+      orderBy = 'desc',
+      statusFilter = [],
+    } = req.query;
+    let statusFilterCustom = statusFilter;
 
-    res.status(200).json(result);
+    // Convert page & limit to number
+    const pageNumber: number = parseInt(String(page), 10);
+    const limitNumber: number = parseInt(String(limit), 10);
+
+    // Check validation
+    if (isNaN(pageNumber)) {
+      throw new Error('Invalid page number');
+    }
+    if (typeof statusFilter === 'string') {
+      statusFilterCustom = [statusFilter];
+    }
+
+    const isExist = search || (statusFilterCustom as string[]).length > 0;
+
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const querySearch = {
+      $or: [
+        { nameTest: searchRegex(String(search)) },
+        {
+          statusTest: searchRegex(String(statusFilterCustom)),
+        },
+      ],
+    };
+
+    const data = await VocabTrainerModel.find(isExist ? querySearch : {})
+      .skip(skip)
+      .limit(limitNumber)
+      .sort([[`${sortBy}`, orderBy as SortOrder]]);
+
+    const totalCount = isExist
+      ? data.length
+      : await VocabTrainerModel.countDocuments();
+    const totalPages = Math.ceil(totalCount / limitNumber);
+
+    res.status(200).json({
+      data,
+      totalPages,
+      currentPage: pageNumber,
+      totalItems: totalCount,
+    });
   } catch (err) {
     handleError(err, res);
   }
