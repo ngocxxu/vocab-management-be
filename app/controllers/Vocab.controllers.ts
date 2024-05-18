@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { handleError, searchRegex } from "../utils/index";
-import { VocabModel } from "../models/Vocab.models";
-import { SortOrder } from "mongoose";
+import { Request, Response } from 'express';
+import { handleError, searchRegex } from '../utils/index';
+import { VocabModel } from '../models/Vocab.models';
+import { SortOrder } from 'mongoose';
 
 export const getAllVocab = async (req: Request, res: Response) => {
   try {
@@ -9,12 +9,13 @@ export const getAllVocab = async (req: Request, res: Response) => {
       page = 1,
       limit = 10,
       search,
-      sortBy = "updatedAt",
-      orderBy = "desc",
-      // statusFilter = [],
+      sortBy = 'updatedAt',
+      orderBy = 'desc',
+      statusFilter = [],
       subjectFilter = [],
     } = req.query;
     let subjectFilterCustom = subjectFilter;
+    let statusFilterCustom = statusFilter;
 
     // Convert page & limit to number
     const pageNumber: number = parseInt(String(page), 10);
@@ -22,12 +23,20 @@ export const getAllVocab = async (req: Request, res: Response) => {
 
     // Check validation
     if (isNaN(pageNumber)) {
-      throw new Error("Invalid page number");
+      throw new Error('Invalid page number');
     }
-    if (typeof subjectFilter === "string") {
+
+    if (typeof subjectFilter === 'string') {
       subjectFilterCustom = [subjectFilter];
     }
-    const isExist = search || (subjectFilterCustom as string[]).length > 0;
+    if (typeof statusFilter === 'string') {
+      statusFilterCustom = [statusFilter];
+    }
+
+    const isExist =
+      search ||
+      (subjectFilterCustom as string[]).length > 0 ||
+      (statusFilterCustom as string[]).length > 0;
 
     const skip = (pageNumber - 1) * limitNumber;
 
@@ -45,6 +54,9 @@ export const getAllVocab = async (req: Request, res: Response) => {
               subject: { $elemMatch: { value: { $in: subjectFilterCustom } } },
             },
           },
+        },
+        {
+          statusTest: { $in: statusFilterCustom },
         },
       ],
     };

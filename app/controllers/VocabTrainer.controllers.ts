@@ -38,7 +38,7 @@ export const getAllVocabTrainer = async (req: Request, res: Response) => {
       $or: [
         { nameTest: searchRegex(String(search)) },
         {
-          statusTest: searchRegex(String(statusFilterCustom)),
+          statusTest: { $in: statusFilterCustom },
         },
       ],
     };
