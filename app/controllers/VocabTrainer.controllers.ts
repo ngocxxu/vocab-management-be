@@ -30,7 +30,7 @@ export const getAllVocabTrainer = async (req: Request, res: Response) => {
       statusFilterCustom = [statusFilter];
     }
 
-    const isExist = search || (statusFilterCustom as string[]).length > 0;
+    const isExist = search || (statusFilterCustom as string[]).length < 3;
 
     const skip = (pageNumber - 1) * limitNumber;
 
