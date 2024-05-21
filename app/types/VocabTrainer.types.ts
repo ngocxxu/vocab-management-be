@@ -1,4 +1,4 @@
-export type TsubmitTestVocabTrainer = {
+export type TupdateTestVocabTrainer = {
   duration: string;
   wordTestSelects: TWordTestSelect[];
 };

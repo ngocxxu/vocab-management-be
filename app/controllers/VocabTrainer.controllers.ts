@@ -105,7 +105,7 @@ export const updateVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
-export const submitTestVocabTrainer = async (req: Request, res: Response) => {
+export const updateTestVocabTrainer = async (req: Request, res: Response) => {
   try {
     const { wordTestSelects } = req.body;
     const item = await VocabTrainerModel.findById(req.params.id).populate(

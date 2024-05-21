@@ -5,7 +5,7 @@ import {
   getVocabTrainer,
   getAllVocabTrainer,
   removeMultiVocabTrainer,
-  submitTestVocabTrainer,
+  updateTestVocabTrainer,
 } from '../controllers/VocabTrainer.controllers';
 import express from 'express';
 
@@ -19,7 +19,7 @@ router.post('/', addVocabTrainer);
 
 router.put('/:id', updateVocabTrainer);
 
-router.post('/test/:id', submitTestVocabTrainer);
+router.put('/test/:id', updateTestVocabTrainer);
 
 router.delete('/:id', removeVocabTrainer);
 
