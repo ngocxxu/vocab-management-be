@@ -2,9 +2,10 @@ import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import { TWordResults, TWordTestSelect } from '../types/VocabTrainer.types';
-import { handleError, searchRegex } from '../utils/index';
+import { getRandomElements, handleError, searchRegex } from '../utils/index';
 import { VocabStatusModel } from '../models/VocabStatus.models';
 import { SortOrder } from 'mongoose';
+import { VocabModel } from '../models/Vocab.models';
 
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
@@ -77,6 +78,40 @@ export const getVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
+export const getQuestions = async (req: Request, res: Response) => {
+  try {
+    const item = await VocabTrainerModel.findById(req.params.id).populate(
+      'wordSelects'
+    );
+    const listWord = await VocabModel.find({});
+    const ids = listWord.map((word) => word._id);
+
+    const result = (item.wordSelects as any).map(
+      (
+        word: { _id: string | ObjectId | ObjectIdLike; textTarget: any },
+        index: number
+      ) => {
+        const randomElements = getRandomElements(ids, 4, word._id);
+
+        const textSources = listWord
+          .filter((item) => randomElements.includes(item._id))
+          .map((item2) => item2.textSource);
+
+        return {
+          question: index++ + 1,
+          questions: textSources,
+          exam: word.textTarget.map((item: { text: string }) => item.text),
+          type: 'source',
+        };
+      }
+    );
+
+    res.status(200).json(result);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 export const addVocabTrainer = async (req: Request, res: Response) => {
   try {
     const result = new VocabTrainerModel({
@@ -114,7 +149,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
 
     // Calculation score
     const newWordResults = (item.wordSelects as any).map(
-      (word: { _id: string | ObjectId | ObjectIdLike; textSource: any }) => {
+      (word: { _id: string | ObjectId | ObjectIdLike; textSource: string }) => {
         const itemB = wordTestSelects.find(
           (item: TWordTestSelect) => item.idWord === word._id.toString()
         );

@@ -6,6 +6,7 @@ import {
   getAllVocabTrainer,
   removeMultiVocabTrainer,
   updateTestVocabTrainer,
+  getQuestions,
 } from '../controllers/VocabTrainer.controllers';
 import express from 'express';
 
@@ -14,6 +15,8 @@ const router = express.Router();
 router.get('/', getAllVocabTrainer);
 
 router.get('/:id', getVocabTrainer);
+
+router.get('/question/:id', getQuestions);
 
 router.post('/', addVocabTrainer);
 
