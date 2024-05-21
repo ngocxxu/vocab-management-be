@@ -99,7 +99,7 @@ export const getQuestions = async (req: Request, res: Response) => {
 
         return {
           question: index++ + 1,
-          questions: textSources,
+          questions: textSources.sort(() => Math.random() - 0.5),
           exam: word.textTarget.map((item: { text: string }) => item.text),
           type: 'source',
         };
