@@ -101,9 +101,9 @@ export const getQuestions = async (req: Request, res: Response) => {
           }));
 
         return {
-          question: index++ + 1,
-          questions: textSources.sort(() => Math.random() - 0.5),
-          exam: word.textTarget.map((item: { text: string }) => item.text),
+          order: index++ + 1,
+          options: textSources.sort(() => Math.random() - 0.5),
+          content: word.textTarget.map((item: { text: string }) => item.text),
           type: 'source',
         };
       }
