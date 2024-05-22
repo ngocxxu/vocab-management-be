@@ -95,7 +95,10 @@ export const getQuestions = async (req: Request, res: Response) => {
 
         const textSources = listWord
           .filter((item) => randomElements.includes(item._id))
-          .map((item2) => item2.textSource);
+          .map((item2) => ({
+            label: item2.textSource,
+            value: item2._id,
+          }));
 
         return {
           question: index++ + 1,
