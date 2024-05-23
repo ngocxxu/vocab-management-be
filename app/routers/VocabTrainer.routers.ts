@@ -22,7 +22,7 @@ router.post('/', addVocabTrainer);
 
 router.put('/:id', updateVocabTrainer);
 
-router.put('/test/:id', updateTestVocabTrainer);
+router.patch('/test/:id', updateTestVocabTrainer);
 
 router.delete('/:id', removeVocabTrainer);
 

@@ -26,7 +26,7 @@ const schema = new mongoose.Schema(
       default: "Pending",
     },
     duration: {
-      type: String,
+      type: Number,
     },
     countTime: {
       type: Number,

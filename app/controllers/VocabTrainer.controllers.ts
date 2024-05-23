@@ -1,11 +1,24 @@
 import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
-import { VocabTrainerModel } from '../models/VocabTrainer.models';
-import { TWordResults, TWordTestSelect } from '../types/VocabTrainer.types';
-import { getRandomElements, handleError, searchRegex } from '../utils/index';
-import { VocabStatusModel } from '../models/VocabStatus.models';
 import { SortOrder } from 'mongoose';
 import { VocabModel } from '../models/Vocab.models';
+import { VocabStatusModel } from '../models/VocabStatus.models';
+import { VocabTrainerModel } from '../models/VocabTrainer.models';
+import { TWordResults } from '../types/VocabTrainer.types';
+import { getRandomElements, handleError, searchRegex } from '../utils/index';
+
+const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
+  new VocabStatusModel({
+    idVocab: ele._id.toString(),
+    status: stt,
+  }).save();
+
+  array.push({
+    userSelect: ele2.userSelect,
+    systemSelect: ele.textSource,
+    status: 'Passed',
+  });
+};
 
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
@@ -146,32 +159,27 @@ export const updateVocabTrainer = async (req: Request, res: Response) => {
 export const updateTestVocabTrainer = async (req: Request, res: Response) => {
   try {
     const { wordTestSelects } = req.body;
+
     const item = await VocabTrainerModel.findById(req.params.id).populate(
       'wordSelects'
     );
 
-    // Calculation score
-    const newWordResults = (item.wordSelects as any).map(
-      (word: { _id: string | ObjectId | ObjectIdLike; textSource: string }) => {
-        const itemB = wordTestSelects.find(
-          (item: TWordTestSelect) => item.idWord === word._id.toString()
-        );
-        if (itemB) {
-          const checkStatus =
-            itemB.userSelect === word.textSource ? 'Passed' : 'Failed';
-          new VocabStatusModel({
-            idVocab: word._id.toString(),
-            status: checkStatus,
-          }).save();
+    const newWordResults: any = [];
 
-          return {
-            userSelect: itemB.userSelect,
-            systemSelect: word.textSource,
-            status: checkStatus,
-          };
+    for (let i = 0; i < (item.wordSelects as any).length; i++) {
+      const element = (item.wordSelects as any)[i];
+
+      for (let j = 0; j < wordTestSelects.length; j++) {
+        if (i === j) {
+          const element2 = wordTestSelects[j];
+          if (element2.idWord === element._id.toString()) {
+            handleWordResult(element, element2, 'Passed', newWordResults);
+          } else {
+            handleWordResult(element, element2, 'Failed', newWordResults);
+          }
         }
       }
-    );
+    }
 
     const countCorrectResults = newWordResults.filter(
       (item: TWordResults) => item.userSelect === item.systemSelect
