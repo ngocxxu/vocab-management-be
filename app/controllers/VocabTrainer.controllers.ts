@@ -16,7 +16,7 @@ const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   array.push({
     userSelect: ele2.userSelect,
     systemSelect: ele.textSource,
-    status: 'Passed',
+    status: stt,
   });
 };
 
