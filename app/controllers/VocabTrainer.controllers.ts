@@ -6,6 +6,7 @@ import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import { TWordResults } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
+import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 
 const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   new VocabStatusModel({
@@ -15,7 +16,10 @@ const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
 
   array.push({
     userSelect: ele2.userSelect,
-    systemSelect: ele.textSource,
+    systemSelect:
+      ele2.type === EVocabTrainerType.SOURCE
+        ? ele.textSource
+        : ele.textTarget.map((item3: any) => item3.text.trim()).join(', '),
     status: stt,
   });
 };
@@ -222,7 +226,7 @@ export const updateTestVocabTrainer = async (req: Request, res: Response) => {
     }
 
     const countCorrectResults = newWordResults.filter(
-      (item: TWordResults) => item.userSelect === item.systemSelect
+      (item: TWordResults) => item.status === 'Passed'
     ).length;
 
     const totalResults = newWordResults.length;

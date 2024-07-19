@@ -49,6 +49,7 @@ export type TVocabTrainer = {
 export type TWordResults = {
   userSelect: string;
   systemSelect: string;
+  status: string;
 };
 
 export type TFormInputsVocabTrainer = {
