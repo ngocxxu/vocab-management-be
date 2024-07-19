@@ -121,7 +121,7 @@ const handleTextTargets = (
   const textTargets = listWord
     .filter((item: any) => randomElements.includes(item._id))
     .map((item2: any) => ({
-      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(','),
+      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(', '),
       value: item2._id,
     }));
 
