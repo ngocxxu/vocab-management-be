@@ -20,6 +20,48 @@ const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   });
 };
 
+const handleTextSources = (
+  listWord: any,
+  randomElements: any[],
+  index: number,
+  word: any
+) => {
+  const textSources = listWord
+    .filter((item: any) => randomElements.includes(item._id))
+    .map((item2: any) => ({
+      label: item2.textSource,
+      value: item2._id,
+    }));
+
+  return {
+    order: index++ + 1,
+    options: textSources.sort(() => Math.random() - 0.5),
+    content: word.textTarget.map((item: { text: string }) => item.text),
+    type: 'source',
+  };
+};
+
+const handleTextTargets = (
+  listWord: any,
+  randomElements: any[],
+  index: number,
+  word: any
+) => {
+  const textTargets = listWord
+    .filter((item: any) => randomElements.includes(item._id))
+    .map((item2: any) => ({
+      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(', '),
+      value: item2._id,
+    }));
+
+  return {
+    order: index++ + 1,
+    options: textTargets.sort(() => Math.random() - 0.5),
+    content: [word.textSource.trim()],
+    type: 'target',
+  };
+};
+
 export const getAllVocabTrainer = async (req: Request, res: Response) => {
   try {
     const {
@@ -89,48 +131,6 @@ export const getVocabTrainer = async (req: Request, res: Response) => {
   } catch (err) {
     handleError(err, res);
   }
-};
-
-const handleTextSources = (
-  listWord: any,
-  randomElements: any[],
-  index: number,
-  word: any
-) => {
-  const textSources = listWord
-    .filter((item: any) => randomElements.includes(item._id))
-    .map((item2: any) => ({
-      label: item2.textSource,
-      value: item2._id,
-    }));
-
-  return {
-    order: index++ + 1,
-    options: textSources.sort(() => Math.random() - 0.5),
-    content: word.textTarget.map((item: { text: string }) => item.text),
-    type: 'source',
-  };
-};
-
-const handleTextTargets = (
-  listWord: any,
-  randomElements: any[],
-  index: number,
-  word: any
-) => {
-  const textTargets = listWord
-    .filter((item: any) => randomElements.includes(item._id))
-    .map((item2: any) => ({
-      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(', '),
-      value: item2._id,
-    }));
-
-  return {
-    order: index++ + 1,
-    options: textTargets.sort(() => Math.random() - 0.5),
-    content: [word.textSource.trim()],
-    type: 'target',
-  };
 };
 
 export const getQuestions = async (req: Request, res: Response) => {
