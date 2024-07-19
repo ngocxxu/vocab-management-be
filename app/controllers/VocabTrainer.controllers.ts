@@ -91,6 +91,48 @@ export const getVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
+const handleTextSources = (
+  listWord: any,
+  randomElements: any[],
+  index: number,
+  word: any
+) => {
+  const textSources = listWord
+    .filter((item: any) => randomElements.includes(item._id))
+    .map((item2: any) => ({
+      label: item2.textSource,
+      value: item2._id,
+    }));
+
+  return {
+    order: index++ + 1,
+    options: textSources.sort(() => Math.random() - 0.5),
+    content: word.textTarget.map((item: { text: string }) => item.text),
+    type: 'source',
+  };
+};
+
+const handleTextTargets = (
+  listWord: any,
+  randomElements: any[],
+  index: number,
+  word: any
+) => {
+  const textTargets = listWord
+    .filter((item: any) => randomElements.includes(item._id))
+    .map((item2: any) => ({
+      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(','),
+      value: item2._id,
+    }));
+
+  return {
+    order: index++ + 1,
+    options: textTargets.sort(() => Math.random() - 0.5),
+    content: [word.textSource.trim()],
+    type: 'target',
+  };
+};
+
 export const getQuestions = async (req: Request, res: Response) => {
   try {
     const item = await VocabTrainerModel.findById(req.params.id).populate(
@@ -101,26 +143,24 @@ export const getQuestions = async (req: Request, res: Response) => {
 
     const result = (item.wordSelects as any).map(
       (
-        word: { _id: string | ObjectId | ObjectIdLike; textTarget: any },
+        word: {
+          _id: string | ObjectId | ObjectIdLike;
+          textSource: string;
+          textTarget: any;
+        },
         index: number
       ) => {
         const randomElements = getRandomElements(ids, 4, word._id);
 
-        const textSources = listWord
-          .filter((item) => randomElements.includes(item._id))
-          .map((item2) => ({
-            label: item2.textSource,
-            value: item2._id,
-          }));
-
-        return {
-          order: index++ + 1,
-          options: textSources.sort(() => Math.random() - 0.5),
-          content: word.textTarget.map((item: { text: string }) => item.text),
-          type: 'source',
-        };
+        if (Math.random() < 0.5) {
+          return handleTextSources(listWord, randomElements, index, word);
+        } else {
+          return handleTextTargets(listWord, randomElements, index, word);
+        }
       }
     );
+
+    console.log({ result });
 
     res.status(200).json(result);
   } catch (err) {
