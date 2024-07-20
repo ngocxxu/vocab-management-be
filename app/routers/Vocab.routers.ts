@@ -5,6 +5,7 @@ import {
   getVocab,
   getAllVocab,
   removeMultiVocab,
+  randomVocab,
 } from '../controllers/Vocab.controllers';
 import express from 'express';
 
@@ -13,6 +14,8 @@ const router = express.Router();
 router.get('/', getAllVocab);
 
 router.get('/:id', getVocab);
+
+router.get('/random/:amount', randomVocab);
 
 router.post('/', addVocab);
 

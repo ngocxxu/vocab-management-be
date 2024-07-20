@@ -93,6 +93,19 @@ export const getVocab = async (req: Request, res: Response) => {
   }
 };
 
+export const randomVocab = async (req: Request, res: Response) => {
+  try {
+    const random = await VocabModel.aggregate([
+      { $sort: { createdAt: -1 } },
+      { $sample: { size: Number(req.params.amount) } },
+    ]);
+
+    res.status(200).json({ data: random });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 export const addVocab = async (req: Request, res: Response) => {
   try {
     const result = new VocabModel({
