@@ -27,6 +27,7 @@ const schema = new mongoose.Schema(
     },
     duration: {
       type: Number,
+      default: 0,
     },
     countTime: {
       type: Number,

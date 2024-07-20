@@ -164,8 +164,6 @@ export const getQuestions = async (req: Request, res: Response) => {
       }
     );
 
-    console.log({ result });
-
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
