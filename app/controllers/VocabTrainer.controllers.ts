@@ -38,7 +38,6 @@ const handleTextSources = (
     }));
 
   return {
-    // order: index++ + 1,
     options: textSources.sort(() => Math.random() - 0.5),
     content: word.textTarget.map((item: { text: string }) => item.text),
     type: 'source',
@@ -59,7 +58,6 @@ const handleTextTargets = (
     }));
 
   return {
-    // order: index++ + 1,
     options: textTargets.sort(() => Math.random() - 0.5),
     content: [word.textSource.trim()],
     type: 'target',
@@ -167,7 +165,10 @@ export const getQuestions = async (req: Request, res: Response) => {
       .sort(() => Math.random() - 0.5)
       .map((item: any, idx: number) => ({ ...item, order: idx + 1 }));
 
-    res.status(200).json(result);
+    res.status(200).json({
+      questions: result,
+      setCountime: item.setCountTime,
+    });
   } catch (err) {
     handleError(err, res);
   }
@@ -178,6 +179,7 @@ export const addVocabTrainer = async (req: Request, res: Response) => {
     const result = new VocabTrainerModel({
       nameTest: req.body.nameTest,
       wordSelects: req.body.wordSelects,
+      setCountTime: req.body.setCountTime,
     }).save();
 
     res.status(200).json(result);

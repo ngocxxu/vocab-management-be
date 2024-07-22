@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const itemWordResult = new mongoose.Schema({
   userSelect: {
@@ -19,11 +19,11 @@ const schema = new mongoose.Schema(
     },
     wordSelects: {
       type: [mongoose.Schema.Types.ObjectId],
-      ref: "Vocab",
+      ref: 'Vocab',
     },
     statusTest: {
       type: String,
-      default: "Pending",
+      default: 'Pending',
     },
     duration: {
       type: Number,
@@ -33,6 +33,10 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    setCountTime: {
+      type: Number,
+      default: 300,
+    },
     wordResults: {
       type: [itemWordResult],
     },
@@ -40,4 +44,4 @@ const schema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const VocabTrainerModel = mongoose.model("VocabTrainer", schema);
+export const VocabTrainerModel = mongoose.model('VocabTrainer', schema);
