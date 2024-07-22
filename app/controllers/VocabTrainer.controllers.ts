@@ -38,7 +38,7 @@ const handleTextSources = (
     }));
 
   return {
-    order: index++ + 1,
+    // order: index++ + 1,
     options: textSources.sort(() => Math.random() - 0.5),
     content: word.textTarget.map((item: { text: string }) => item.text),
     type: 'source',
@@ -59,7 +59,7 @@ const handleTextTargets = (
     }));
 
   return {
-    order: index++ + 1,
+    // order: index++ + 1,
     options: textTargets.sort(() => Math.random() - 0.5),
     content: [word.textSource.trim()],
     type: 'target',
@@ -145,24 +145,27 @@ export const getQuestions = async (req: Request, res: Response) => {
     const listWord = await VocabModel.find({});
     const ids = listWord.map((word) => word._id);
 
-    const result = (item.wordSelects as any).map(
-      (
-        word: {
-          _id: string | ObjectId | ObjectIdLike;
-          textSource: string;
-          textTarget: any;
-        },
-        index: number
-      ) => {
-        const randomElements = getRandomElements(ids, 4, word._id);
+    const result = (item.wordSelects as any)
+      .map(
+        (
+          word: {
+            _id: string | ObjectId | ObjectIdLike;
+            textSource: string;
+            textTarget: any;
+          },
+          index: number
+        ) => {
+          const randomElements = getRandomElements(ids, 4, word._id);
 
-        if (Math.random() < 0.5) {
-          return handleTextSources(listWord, randomElements, index, word);
-        } else {
-          return handleTextTargets(listWord, randomElements, index, word);
+          if (Math.random() < 0.5) {
+            return handleTextSources(listWord, randomElements, index, word);
+          } else {
+            return handleTextTargets(listWord, randomElements, index, word);
+          }
         }
-      }
-    );
+      )
+      .sort(() => Math.random() - 0.5)
+      .map((item: any, idx: number) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json(result);
   } catch (err) {
