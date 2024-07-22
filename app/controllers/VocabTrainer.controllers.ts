@@ -167,7 +167,7 @@ export const getQuestions = async (req: Request, res: Response) => {
 
     res.status(200).json({
       questions: result,
-      setCountime: item.setCountTime,
+      setCountTime: item.setCountTime,
     });
   } catch (err) {
     handleError(err, res);
