@@ -268,7 +268,6 @@ export const removeMultiVocabTrainer = async (req: Request, res: Response) => {
     const result = await VocabTrainerModel.deleteMany({
       _id: { $in: req.body },
     });
-
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
