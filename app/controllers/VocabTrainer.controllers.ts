@@ -162,7 +162,7 @@ export const getQuestions = async (req: Request, res: Response) => {
           }
         }
       )
-      .sort(() => Math.random() - 0.5)
+      // .sort(() => Math.random() - 0.5)
       .map((item: any, idx: number) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json({
