@@ -1,5 +1,6 @@
 import { EStatusFilter, EVocabTrainerType } from '../enums/VocabTrainer.enums';
-import { TPagination, TSort } from './Global.types';
+import { TOption, TPagination, TSort } from './Global.types';
+import { TVocabRes } from './Vocab.types';
 
 export type TupdateTestVocabTrainer = {
   duration: string;
@@ -7,37 +8,9 @@ export type TupdateTestVocabTrainer = {
 };
 
 export type TWordTestSelect = {
-  idWord: string
-  userSelect?: string
-  type?: EVocabTrainerType
-};
-
-export type TExamples = {
-  source: string;
-  target: string;
-};
-
-export type TTextTarget = {
-  text: string;
-  wordType: string;
-  explanationSource: string;
-  explanationTarget: string;
-  examples: TExamples[];
-  grammar: string;
-  subject: TOption[];
-};
-
-export type TVocab = {
-  _id: string;
-  sourceLanguage: string;
-  targetLanguage: string;
-  textSource: string;
-  textTarget: TTextTarget[];
-};
-
-export type TOption = {
-  label: string;
-  value: string;
+  idWord: string;
+  userSelect?: string;
+  type?: EVocabTrainerType;
 };
 
 export type TVocabTrainerPopulate = {
@@ -48,7 +21,7 @@ export type TVocabTrainerPopulate = {
   updatedAt: string;
   countTime: number;
   setCountTime: number;
-  wordSelects: TVocab[];
+  wordSelects: TVocabRes[];
   wordResults: TWordResults[];
 };
 

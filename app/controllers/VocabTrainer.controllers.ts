@@ -14,16 +14,16 @@ import {
   TQuestions,
   TUpdateTestVocabTrainerReq,
   TUpdateVocabTrainerReq,
-  TVocab,
   TVocabTrainerPopulate,
   TVocabTrainerRes,
   TWordResults,
   TWordTestSelect,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
+import { TVocabRes } from '../types/Vocab.types';
 
 const handleWordResult = (
-  ele: TVocab,
+  ele: TVocabRes,
   ele2: TWordTestSelect,
   stt: string,
   data: TWordResults[]
@@ -44,9 +44,9 @@ const handleWordResult = (
 };
 
 const handleTexts = (
-  listWord: TVocab[],
+  listWord: TVocabRes[],
   randomElements: string[],
-  word: TVocab,
+  word: TVocabRes,
   mode: EVocabTrainerType
 ) => {
   const texts = listWord
@@ -168,7 +168,7 @@ export const getQuestions = async (
     )
       .populate('wordSelects')
       .lean();
-    const listWord: TVocab[] = await VocabModel.find({}).lean();
+    const listWord: TVocabRes[] = await VocabModel.find({}).lean();
     const ids = listWord.map((word) => word._id);
 
     const result: TQuestions[] = item.wordSelects
@@ -308,7 +308,10 @@ export const updateTestVocabTrainer = async (
   }
 };
 
-export const removeVocabTrainer = async (req: Request, res: Response) => {
+export const removeVocabTrainer = async (
+  req: TRequest<TParams, {}, {}>,
+  res: Response
+) => {
   try {
     const result = await VocabTrainerModel.findByIdAndDelete(req.params.id);
 
@@ -318,7 +321,10 @@ export const removeVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
-export const removeMultiVocabTrainer = async (req: Request, res: Response) => {
+export const removeMultiVocabTrainer = async (
+  req: TRequest<{}, string[], {}>,
+  res: Response
+) => {
   try {
     const result = await VocabTrainerModel.deleteMany({
       _id: { $in: req.body },

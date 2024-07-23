@@ -2,12 +2,25 @@ import { Request, Response } from 'express';
 import { handleError, searchRegex } from '../utils/index';
 import { VocabModel } from '../models/Vocab.models';
 import { SortOrder } from 'mongoose';
+import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
+import { EPagination } from '../enums/Global.enums';
+import {
+  TAddVocabReq,
+  TGetAllVocabReq,
+  TRandomVocabReq,
+  TRandomVocabRes,
+  TUpdateVocabReq,
+  TVocabRes,
+} from '../types/Vocab.types';
 
-export const getAllVocab = async (req: Request, res: Response) => {
+export const getAllVocab = async (
+  req: TRequest<{}, {}, TGetAllVocabReq>,
+  res: Response<TDataPaginationRes<TVocabRes[]>>
+) => {
   try {
     const {
-      page = 1,
-      limit = 10,
+      page = EPagination.PAGE,
+      limit = EPagination.LIMIT,
       search,
       sortBy = 'updatedAt',
       orderBy = 'desc',
@@ -18,8 +31,8 @@ export const getAllVocab = async (req: Request, res: Response) => {
     let statusFilterCustom = statusFilter;
 
     // Convert page & limit to number
-    const pageNumber: number = parseInt(String(page), 10);
-    const limitNumber: number = parseInt(String(limit), 10);
+    const pageNumber = parseInt(String(page));
+    const limitNumber = parseInt(String(limit));
 
     // Check validation
     if (isNaN(pageNumber)) {
@@ -34,9 +47,7 @@ export const getAllVocab = async (req: Request, res: Response) => {
     }
 
     const isExist =
-      search ||
-      (subjectFilterCustom as string[]).length > 0 ||
-      (statusFilterCustom as string[]).length > 0;
+      search || subjectFilterCustom.length > 0 || statusFilterCustom.length > 0;
 
     const skip = (pageNumber - 1) * limitNumber;
 
@@ -61,10 +72,11 @@ export const getAllVocab = async (req: Request, res: Response) => {
       ],
     };
 
-    const data = await VocabModel.find(isExist ? querySearch : {})
+    const data: TVocabRes[] = await VocabModel.find(isExist ? querySearch : {})
       .skip(skip)
       .limit(limitNumber)
-      .sort([[`${sortBy}`, orderBy as SortOrder]]);
+      .sort([[`${sortBy}`, orderBy as SortOrder]])
+      .lean();
 
     const totalCount = isExist
       ? data.length
@@ -82,20 +94,30 @@ export const getAllVocab = async (req: Request, res: Response) => {
   }
 };
 
-export const getVocab = async (req: Request, res: Response) => {
+export const getVocab = async (
+  req: TRequest<TParams, {}, {}>,
+  res: Response<TVocabRes>
+) => {
   try {
-    const result = await VocabModel.findById({ _id: req.params.id }).sort({
-      createdAt: -1,
-    });
+    const result: TVocabRes = await VocabModel.findById({
+      _id: req.params.id,
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
   }
 };
 
-export const randomVocab = async (req: Request, res: Response) => {
+export const randomVocab = async (
+  req: TRequest<TRandomVocabReq, {}, {}>,
+  res: Response<TRandomVocabRes>
+) => {
   try {
-    const random = await VocabModel.aggregate([
+    const random: TVocabRes[] = await VocabModel.aggregate([
       { $sort: { createdAt: -1 } },
       { $sample: { size: Number(req.params.amount) } },
     ]);
@@ -106,7 +128,10 @@ export const randomVocab = async (req: Request, res: Response) => {
   }
 };
 
-export const addVocab = async (req: Request, res: Response) => {
+export const addVocab = async (
+  req: TRequest<{}, TAddVocabReq, {}>,
+  res: Response
+) => {
   try {
     const result = new VocabModel({
       sourceLanguage: req.body.sourceLanguage,
@@ -121,7 +146,10 @@ export const addVocab = async (req: Request, res: Response) => {
   }
 };
 
-export const updateVocab = async (req: Request, res: Response) => {
+export const updateVocab = async (
+  req: TRequest<TParams, TUpdateVocabReq, {}>,
+  res: Response
+) => {
   try {
     const result = await VocabModel.findByIdAndUpdate(req.params.id, {
       sourceLanguage: req.body.sourceLanguage,
@@ -136,7 +164,10 @@ export const updateVocab = async (req: Request, res: Response) => {
   }
 };
 
-export const removeVocab = async (req: Request, res: Response) => {
+export const removeVocab = async (
+  req: TRequest<TParams, {}, {}>,
+  res: Response
+) => {
   try {
     const result = await VocabModel.findByIdAndDelete(req.params.id);
 
@@ -146,7 +177,10 @@ export const removeVocab = async (req: Request, res: Response) => {
   }
 };
 
-export const removeMultiVocab = async (req: Request, res: Response) => {
+export const removeMultiVocab = async (
+  req: TRequest<{}, string[], {}>,
+  res: Response
+) => {
   try {
     const result = await VocabModel.deleteMany({
       _id: { $in: req.body },
