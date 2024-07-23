@@ -6,11 +6,10 @@ import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
-import { TDataPaginationRes, TRequest } from '../types/Global.types';
+import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
 import {
   TGetAllVocabTrainerReq,
   TGetQuestionsRes,
-  TGetVocabTrainerReq,
   TQuestions,
   TVocabTrainer,
   TWordResults,
@@ -128,7 +127,7 @@ export const getAllVocabTrainer = async (
 };
 
 export const getVocabTrainer = async (
-  req: TRequest<TGetVocabTrainerReq, {}, {}>,
+  req: TRequest<TParams, {}, {}>,
   res: Response<TVocabTrainer>
 ) => {
   try {
@@ -147,7 +146,7 @@ export const getVocabTrainer = async (
 };
 
 export const getQuestions = async (
-  req: TRequest<TGetQuestionsReq, {}, {}>,
+  req: TRequest<TParams, {}, {}>,
   res: Response<TGetQuestionsRes>
 ) => {
   try {

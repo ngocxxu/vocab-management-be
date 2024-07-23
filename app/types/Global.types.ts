@@ -29,3 +29,7 @@ export type TRequest<TParams = {}, TBody = {}, TQuery = {}> = Request<
   TQuery
 >;
 export type TResponse<T> = Response<TDataPaginationRes<T>>;
+
+export type TParams = {
+  id: string;
+};
