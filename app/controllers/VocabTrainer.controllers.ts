@@ -8,9 +8,11 @@ import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
 import {
+  TAddVocabTrainerReq,
   TGetAllVocabTrainerReq,
   TGetQuestionsRes,
   TQuestions,
+  TUpdateVocabTrainer,
   TVocabTrainer,
   TWordResults,
 } from '../types/VocabTrainer.types';
@@ -184,7 +186,10 @@ export const getQuestions = async (
   }
 };
 
-export const addVocabTrainer = async (req: Request, res: Response) => {
+export const addVocabTrainer = async (
+  req: TRequest<{}, TAddVocabTrainerReq, {}>,
+  res: Response
+) => {
   try {
     const result = new VocabTrainerModel({
       nameTest: req.body.nameTest,
@@ -198,7 +203,10 @@ export const addVocabTrainer = async (req: Request, res: Response) => {
   }
 };
 
-export const updateVocabTrainer = async (req: Request, res: Response) => {
+export const updateVocabTrainer = async (
+  req: TRequest<TParams, TUpdateVocabTrainer, {}>,
+  res: Response
+) => {
   try {
     const result = await VocabTrainerModel.findByIdAndUpdate(req.params.id, {
       sourceLanguage: req.body.sourceLanguage,

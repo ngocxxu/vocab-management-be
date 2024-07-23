@@ -84,3 +84,16 @@ export type TGetQuestionsRes = {
   questions: TQuestions[];
   setCountTime: number;
 };
+
+export type TAddVocabTrainerReq = {
+  nameTest: string;
+  wordSelects: string[];
+  setCountTime: number;
+};
+
+export type TUpdateVocabTrainer = {
+  sourceLanguage: string;
+  targetLanguage: string;
+  textSource: string;
+  textTarget: string;
+};
