@@ -1,3 +1,7 @@
+import { Document } from 'mongoose';
+import { EStatusFilter } from '../enums/VocabTrainer.enums';
+import { TPagination, TSort } from './Global.types';
+
 export type TupdateTestVocabTrainer = {
   duration: string;
   wordTestSelects: TWordTestSelect[];
@@ -58,3 +62,9 @@ export type TFormInputsVocabTrainer = {
 };
 
 export type TScoreStatus = 'Passed' | 'Failed';
+
+export type TGetAllVocabTrainerReq = {
+  search?: string;
+  statusFilter: EStatusFilter[];
+} & TPagination &
+  TSort;

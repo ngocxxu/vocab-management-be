@@ -4,9 +4,14 @@ import { SortOrder } from 'mongoose';
 import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
-import { TWordResults } from '../types/VocabTrainer.types';
+import {
+  TGetAllVocabTrainerReq,
+  TVocabTrainer,
+  TWordResults,
+} from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
 import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
+import { TDataPaginationRes, TRequest } from '../types/Global.types';
 
 const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   new VocabStatusModel({
@@ -24,12 +29,7 @@ const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   });
 };
 
-const handleTextSources = (
-  listWord: any,
-  randomElements: any[],
-  index: number,
-  word: any
-) => {
+const handleTextSources = (listWord: any, randomElements: any[], word: any) => {
   const textSources = listWord
     .filter((item: any) => randomElements.includes(item._id))
     .map((item2: any) => ({
@@ -44,12 +44,7 @@ const handleTextSources = (
   };
 };
 
-const handleTextTargets = (
-  listWord: any,
-  randomElements: any[],
-  index: number,
-  word: any
-) => {
+const handleTextTargets = (listWord: any, randomElements: any[], word: any) => {
   const textTargets = listWord
     .filter((item: any) => randomElements.includes(item._id))
     .map((item2: any) => ({
@@ -64,7 +59,10 @@ const handleTextTargets = (
   };
 };
 
-export const getAllVocabTrainer = async (req: Request, res: Response) => {
+export const getAllVocabTrainer = async (
+  req: TRequest<TGetAllVocabTrainerReq>,
+  res: Response<TDataPaginationRes<TVocabTrainer[]>>
+) => {
   try {
     const {
       page = 1,
@@ -88,7 +86,7 @@ export const getAllVocabTrainer = async (req: Request, res: Response) => {
       statusFilterCustom = [statusFilter];
     }
 
-    const isExist = search || (statusFilterCustom as string[]).length < 3;
+    const isExist = search || statusFilterCustom.length < 3;
 
     const skip = (pageNumber - 1) * limitNumber;
 
@@ -101,10 +99,13 @@ export const getAllVocabTrainer = async (req: Request, res: Response) => {
       ],
     };
 
-    const data = await VocabTrainerModel.find(isExist ? querySearch : {})
+    const data: TVocabTrainer[] = await VocabTrainerModel.find(
+      isExist ? querySearch : {}
+    )
       .skip(skip)
       .limit(limitNumber)
-      .sort([[`${sortBy}`, orderBy as SortOrder]]);
+      .sort([[`${sortBy}`, orderBy as SortOrder]])
+      .lean();
 
     const totalCount = isExist
       ? data.length
@@ -156,9 +157,9 @@ export const getQuestions = async (req: Request, res: Response) => {
           const randomElements = getRandomElements(ids, 4, word._id);
 
           if (Math.random() < 0.5) {
-            return handleTextSources(listWord, randomElements, index, word);
+            return handleTextSources(listWord, randomElements, word);
           } else {
-            return handleTextTargets(listWord, randomElements, index, word);
+            return handleTextTargets(listWord, randomElements, word);
           }
         }
       )
