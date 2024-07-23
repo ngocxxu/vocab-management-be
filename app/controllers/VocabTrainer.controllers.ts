@@ -6,6 +6,7 @@ import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import {
   TGetAllVocabTrainerReq,
+  TGetVocabTrainerReq,
   TVocabTrainer,
   TWordResults,
 } from '../types/VocabTrainer.types';
@@ -124,13 +125,19 @@ export const getAllVocabTrainer = async (
   }
 };
 
-export const getVocabTrainer = async (req: Request, res: Response) => {
+export const getVocabTrainer = async (
+  req: TRequest<TGetVocabTrainerReq, {}, {}>,
+  res: Response<TVocabTrainer>
+) => {
   try {
-    const result = await VocabTrainerModel.findById({
+    const result: TVocabTrainer = await VocabTrainerModel.findById({
       _id: req.params.id,
-    }).sort({
-      createdAt: -1,
-    });
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);

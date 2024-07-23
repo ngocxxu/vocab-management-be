@@ -68,3 +68,7 @@ export type TGetAllVocabTrainerReq = {
   statusFilter: EStatusFilter[];
 } & TPagination &
   TSort;
+
+export type TGetVocabTrainerReq = {
+  id: string;
+};
