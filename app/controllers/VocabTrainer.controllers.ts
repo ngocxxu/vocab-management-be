@@ -12,6 +12,7 @@ import {
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
 import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { TDataPaginationRes, TRequest } from '../types/Global.types';
+import { EPagination } from '../enums/Global.enums';
 
 const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   new VocabStatusModel({
@@ -60,13 +61,13 @@ const handleTextTargets = (listWord: any, randomElements: any[], word: any) => {
 };
 
 export const getAllVocabTrainer = async (
-  req: TRequest<TGetAllVocabTrainerReq>,
+  req: TRequest<{}, {}, TGetAllVocabTrainerReq>,
   res: Response<TDataPaginationRes<TVocabTrainer[]>>
 ) => {
   try {
     const {
-      page = 1,
-      limit = 10,
+      page = EPagination.PAGE,
+      limit = EPagination.LIMIT,
       search,
       sortBy = 'updatedAt',
       orderBy = 'desc',
@@ -75,8 +76,8 @@ export const getAllVocabTrainer = async (
     let statusFilterCustom = statusFilter;
 
     // Convert page & limit to number
-    const pageNumber: number = parseInt(String(page), 10);
-    const limitNumber: number = parseInt(String(limit), 10);
+    const pageNumber: number = parseInt(String(page));
+    const limitNumber: number = parseInt(String(limit));
 
     // Check validation
     if (isNaN(pageNumber)) {

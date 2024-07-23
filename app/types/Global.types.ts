@@ -17,5 +17,10 @@ export type TDataPaginationRes<T> = {
   totalItems: number;
 };
 
-export type TRequest<T> = Request<{}, {}, {}, T>;
+export type TRequest<TParams = {}, TBody = {}, TQuery = {}> = Request<
+  TParams,
+  {},
+  TBody,
+  TQuery
+>;
 export type TResponse<T> = Response<TDataPaginationRes<T>>;
