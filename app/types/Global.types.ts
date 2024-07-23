@@ -1,5 +1,10 @@
 import { Request, Response } from 'express';
 
+export type TOption = {
+  label: string;
+  value: string;
+};
+
 export type TPagination = {
   page?: number;
   limit?: number;

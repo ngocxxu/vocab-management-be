@@ -1,19 +1,21 @@
 import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
 import { SortOrder } from 'mongoose';
+import { EPagination } from '../enums/Global.enums';
+import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
+import { TDataPaginationRes, TRequest } from '../types/Global.types';
 import {
   TGetAllVocabTrainerReq,
+  TGetQuestionsRes,
   TGetVocabTrainerReq,
+  TQuestions,
   TVocabTrainer,
   TWordResults,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
-import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
-import { TDataPaginationRes, TRequest } from '../types/Global.types';
-import { EPagination } from '../enums/Global.enums';
 
 const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
   new VocabStatusModel({
@@ -144,7 +146,10 @@ export const getVocabTrainer = async (
   }
 };
 
-export const getQuestions = async (req: Request, res: Response) => {
+export const getQuestions = async (
+  req: TRequest<TGetQuestionsReq, {}, {}>,
+  res: Response<TGetQuestionsRes>
+) => {
   try {
     const item = await VocabTrainerModel.findById(req.params.id).populate(
       'wordSelects'
@@ -152,16 +157,13 @@ export const getQuestions = async (req: Request, res: Response) => {
     const listWord = await VocabModel.find({});
     const ids = listWord.map((word) => word._id);
 
-    const result = (item.wordSelects as any)
+    const result: TQuestions[] = (item.wordSelects as any)
       .map(
-        (
-          word: {
-            _id: string | ObjectId | ObjectIdLike;
-            textSource: string;
-            textTarget: any;
-          },
-          index: number
-        ) => {
+        (word: {
+          _id: string | ObjectId | ObjectIdLike;
+          textSource: string;
+          textTarget: any;
+        }) => {
           const randomElements = getRandomElements(ids, 4, word._id);
 
           if (Math.random() < 0.5) {

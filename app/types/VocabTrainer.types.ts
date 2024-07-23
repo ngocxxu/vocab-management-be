@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { EStatusFilter } from '../enums/VocabTrainer.enums';
+import { EStatusFilter, EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { TPagination, TSort } from './Global.types';
 
 export type TupdateTestVocabTrainer = {
@@ -71,4 +71,16 @@ export type TGetAllVocabTrainerReq = {
 
 export type TGetVocabTrainerReq = {
   id: string;
+};
+
+export type TQuestions = {
+  content: string[];
+  options: TOption[];
+  order: number;
+  type: EVocabTrainerType;
+};
+
+export type TGetQuestionsRes = {
+  questions: TQuestions[];
+  setCountTime: number;
 };
