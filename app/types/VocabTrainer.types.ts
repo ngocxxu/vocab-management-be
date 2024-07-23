@@ -1,4 +1,3 @@
-import { Document } from 'mongoose';
 import { EStatusFilter, EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { TPagination, TSort } from './Global.types';
 
@@ -8,8 +7,9 @@ export type TupdateTestVocabTrainer = {
 };
 
 export type TWordTestSelect = {
-  idWord: string;
-  userSelect: string;
+  idWord: string
+  userSelect?: string
+  type?: EVocabTrainerType
 };
 
 export type TExamples = {
@@ -40,13 +40,27 @@ export type TOption = {
   value: string;
 };
 
-export type TVocabTrainer = {
+export type TVocabTrainerPopulate = {
   _id: string;
   nameTest: string;
   status: string;
   duration: string;
   updatedAt: string;
   countTime: number;
+  setCountTime: number;
+  wordSelects: TVocab[];
+  wordResults: TWordResults[];
+};
+
+export type TVocabTrainerRes = {
+  _id: string;
+  nameTest: string;
+  status: string;
+  duration: string;
+  updatedAt: string;
+  countTime: number;
+  setCountTime: number;
+  wordSelects: string[];
   wordResults: TWordResults[];
 };
 
@@ -91,9 +105,18 @@ export type TAddVocabTrainerReq = {
   setCountTime: number;
 };
 
-export type TUpdateVocabTrainer = {
+export type TUpdateVocabTrainerReq = {
   sourceLanguage: string;
   targetLanguage: string;
   textSource: string;
   textTarget: string;
+};
+
+export type TUpdateTestVocabTrainerReq = {
+  duration: number;
+  wordTestSelects: {
+    idWord: string;
+    userSelect?: string;
+    type?: EVocabTrainerType;
+  }[];
 };

@@ -1,7 +1,7 @@
 import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
 import { SortOrder } from 'mongoose';
-import { EPagination } from '../enums/Global.enums';
+import { EPagination, TStatusResult } from '../enums/Global.enums';
 import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
@@ -12,61 +12,72 @@ import {
   TGetAllVocabTrainerReq,
   TGetQuestionsRes,
   TQuestions,
-  TUpdateVocabTrainer,
-  TVocabTrainer,
+  TUpdateTestVocabTrainerReq,
+  TUpdateVocabTrainerReq,
+  TVocab,
+  TVocabTrainerPopulate,
+  TVocabTrainerRes,
   TWordResults,
+  TWordTestSelect,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
 
-const handleWordResult = (ele: any, ele2: any, stt: string, array: any) => {
+const handleWordResult = (
+  ele: TVocab,
+  ele2: TWordTestSelect,
+  stt: string,
+  data: TWordResults[]
+) => {
   new VocabStatusModel({
     idVocab: ele._id.toString(),
     status: stt,
   }).save();
 
-  array.push({
+  data.push({
     userSelect: ele2.userSelect,
     systemSelect:
       ele2.type === EVocabTrainerType.SOURCE
         ? ele.textSource
-        : ele.textTarget.map((item3: any) => item3.text.trim()).join(', '),
+        : ele.textTarget.map((item3) => item3.text.trim()).join(', '),
     status: stt,
   });
 };
 
-const handleTextSources = (listWord: any, randomElements: any[], word: any) => {
-  const textSources = listWord
-    .filter((item: any) => randomElements.includes(item._id))
-    .map((item2: any) => ({
-      label: item2.textSource,
-      value: item2._id,
-    }));
+const handleTexts = (
+  listWord: TVocab[],
+  randomElements: string[],
+  word: TVocab,
+  mode: EVocabTrainerType
+) => {
+  const texts = listWord
+    .filter((item) => randomElements.includes(item._id))
+    .map((item2) => {
+      if (mode === EVocabTrainerType.SOURCE) {
+        return {
+          label: item2.textSource,
+          value: item2._id,
+        };
+      } else {
+        return {
+          label: item2.textTarget.map((item3) => item3.text.trim()).join(', '),
+          value: item2._id,
+        };
+      }
+    });
 
   return {
-    options: textSources.sort(() => Math.random() - 0.5),
-    content: word.textTarget.map((item: { text: string }) => item.text),
-    type: 'source',
-  };
-};
-
-const handleTextTargets = (listWord: any, randomElements: any[], word: any) => {
-  const textTargets = listWord
-    .filter((item: any) => randomElements.includes(item._id))
-    .map((item2: any) => ({
-      label: item2.textTarget.map((item3: any) => item3.text.trim()).join(', '),
-      value: item2._id,
-    }));
-
-  return {
-    options: textTargets.sort(() => Math.random() - 0.5),
-    content: [word.textSource.trim()],
-    type: 'target',
+    options: texts.sort(() => Math.random() - 0.5),
+    content:
+      mode === EVocabTrainerType.SOURCE
+        ? word.textTarget.map((item: { text: string }) => item.text)
+        : [word.textSource.trim()],
+    type: mode,
   };
 };
 
 export const getAllVocabTrainer = async (
   req: TRequest<{}, {}, TGetAllVocabTrainerReq>,
-  res: Response<TDataPaginationRes<TVocabTrainer[]>>
+  res: Response<TDataPaginationRes<TVocabTrainerRes[]>>
 ) => {
   try {
     const {
@@ -104,7 +115,7 @@ export const getAllVocabTrainer = async (
       ],
     };
 
-    const data: TVocabTrainer[] = await VocabTrainerModel.find(
+    const data: TVocabTrainerRes[] = await VocabTrainerModel.find(
       isExist ? querySearch : {}
     )
       .skip(skip)
@@ -130,10 +141,10 @@ export const getAllVocabTrainer = async (
 
 export const getVocabTrainer = async (
   req: TRequest<TParams, {}, {}>,
-  res: Response<TVocabTrainer>
+  res: Response<TVocabTrainerRes>
 ) => {
   try {
-    const result: TVocabTrainer = await VocabTrainerModel.findById({
+    const result: TVocabTrainerRes = await VocabTrainerModel.findById({
       _id: req.params.id,
     })
       .sort({
@@ -152,30 +163,36 @@ export const getQuestions = async (
   res: Response<TGetQuestionsRes>
 ) => {
   try {
-    const item = await VocabTrainerModel.findById(req.params.id).populate(
-      'wordSelects'
-    );
-    const listWord = await VocabModel.find({});
+    const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
+      req.params.id
+    )
+      .populate('wordSelects')
+      .lean();
+    const listWord: TVocab[] = await VocabModel.find({}).lean();
     const ids = listWord.map((word) => word._id);
 
-    const result: TQuestions[] = (item.wordSelects as any)
-      .map(
-        (word: {
-          _id: string | ObjectId | ObjectIdLike;
-          textSource: string;
-          textTarget: any;
-        }) => {
-          const randomElements = getRandomElements(ids, 4, word._id);
+    const result: TQuestions[] = item.wordSelects
+      .map((word) => {
+        const randomElements = getRandomElements(ids, 4, word._id);
 
-          if (Math.random() < 0.5) {
-            return handleTextSources(listWord, randomElements, word);
-          } else {
-            return handleTextTargets(listWord, randomElements, word);
-          }
+        if (Math.random() < 0.5) {
+          return handleTexts(
+            listWord,
+            randomElements,
+            word,
+            EVocabTrainerType.SOURCE
+          );
+        } else {
+          return handleTexts(
+            listWord,
+            randomElements,
+            word,
+            EVocabTrainerType.TARGET
+          );
         }
-      )
+      })
       // .sort(() => Math.random() - 0.5)
-      .map((item: any, idx: number) => ({ ...item, order: idx + 1 }));
+      .map((item: TQuestions, idx) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json({
       questions: result,
@@ -204,7 +221,7 @@ export const addVocabTrainer = async (
 };
 
 export const updateVocabTrainer = async (
-  req: TRequest<TParams, TUpdateVocabTrainer, {}>,
+  req: TRequest<TParams, TUpdateVocabTrainerReq, {}>,
   res: Response
 ) => {
   try {
@@ -221,49 +238,69 @@ export const updateVocabTrainer = async (
   }
 };
 
-export const updateTestVocabTrainer = async (req: Request, res: Response) => {
+export const updateTestVocabTrainer = async (
+  req: TRequest<TParams, TUpdateTestVocabTrainerReq, {}>,
+  res: Response
+) => {
   try {
     const { wordTestSelects } = req.body;
 
-    const item = await VocabTrainerModel.findById(req.params.id).populate(
-      'wordSelects'
-    );
+    const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
+      req.params.id
+    )
+      .populate('wordSelects')
+      .lean();
 
-    const newWordResults: any = [];
+    const newWordResults: TWordResults[] = [];
 
-    for (let i = 0; i < (item.wordSelects as any).length; i++) {
-      const element = (item.wordSelects as any)[i];
+    for (let i = 0; i < item.wordSelects.length; i++) {
+      const element = item.wordSelects[i];
 
       for (let j = 0; j < wordTestSelects.length; j++) {
         if (i === j) {
           const element2 = wordTestSelects[j];
           if (element2.idWord === element._id.toString()) {
-            handleWordResult(element, element2, 'Passed', newWordResults);
+            handleWordResult(
+              element,
+              element2,
+              TStatusResult.PASSED,
+              newWordResults
+            );
           } else {
-            handleWordResult(element, element2, 'Failed', newWordResults);
+            handleWordResult(
+              element,
+              element2,
+              TStatusResult.FAILED,
+              newWordResults
+            );
           }
         }
       }
     }
 
     const countCorrectResults = newWordResults.filter(
-      (item: TWordResults) => item.status === 'Passed'
+      (item: TWordResults) => item.status === TStatusResult.PASSED
     ).length;
 
     const totalResults = newWordResults.length;
     const statusResult =
-      countCorrectResults / totalResults >= 0.7 ? 'Passed' : 'Failed';
+      countCorrectResults / totalResults >= 0.7
+        ? TStatusResult.PASSED
+        : TStatusResult.FAILED;
 
-    const result = await VocabTrainerModel.findByIdAndUpdate(req.params.id, {
-      $set: {
-        duration: req.body.duration,
-        statusTest: statusResult,
-        wordResults: newWordResults,
-      },
-      $inc: {
-        countTime: 1,
-      },
-    });
+    const result: TVocabTrainerRes = await VocabTrainerModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          duration: req.body.duration,
+          statusTest: statusResult,
+          wordResults: newWordResults,
+        },
+        $inc: {
+          countTime: 1,
+        },
+      }
+    ).lean();
 
     res.status(200).json(result);
   } catch (err) {

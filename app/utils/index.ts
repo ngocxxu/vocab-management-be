@@ -20,10 +20,10 @@ function escapeRegex(text: string) {
   return text.replace(specialChars, '\\$&');
 }
 
-export function getRandomElements(
-  array: any,
+export function getRandomElements<T>(
+  array: T[],
   count: number,
-  targetId: unknown
+  targetId: string
 ) {
   const shuffled = array.sort(() => 0.5 - Math.random());
   const target = shuffled.find((item: any) => item.equals(targetId));
