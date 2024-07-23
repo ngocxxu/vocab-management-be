@@ -64,6 +64,7 @@ export type TQuestions = {
   content: string[];
   options: TOption[];
   order: number;
+  randomOrder: number;
   type: EVocabTrainerType;
 };
 
@@ -88,6 +89,7 @@ export type TUpdateVocabTrainerReq = {
 export type TUpdateTestVocabTrainerReq = {
   duration: number;
   wordTestSelects: {
+    randomOrder: number;
     idWord: string;
     userSelect?: string;
     type?: EVocabTrainerType;

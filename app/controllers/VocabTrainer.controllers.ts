@@ -1,4 +1,3 @@
-import { ObjectId, ObjectIdLike } from 'bson';
 import { Request, Response } from 'express';
 import { SortOrder } from 'mongoose';
 import { EPagination, TStatusResult } from '../enums/Global.enums';
@@ -47,7 +46,8 @@ const handleTexts = (
   listWord: TVocabRes[],
   randomElements: string[],
   word: TVocabRes,
-  mode: EVocabTrainerType
+  mode: EVocabTrainerType,
+  index: number
 ) => {
   const texts = listWord
     .filter((item) => randomElements.includes(item._id))
@@ -66,6 +66,7 @@ const handleTexts = (
     });
 
   return {
+    randomOrder: index + 1,
     options: texts.sort(() => Math.random() - 0.5),
     content:
       mode === EVocabTrainerType.SOURCE
@@ -172,7 +173,7 @@ export const getQuestions = async (
     const ids = listWord.map((word) => word._id);
 
     const result: TQuestions[] = item.wordSelects
-      .map((word) => {
+      .map((word, index) => {
         const randomElements = getRandomElements(ids, 4, word._id);
 
         if (Math.random() < 0.5) {
@@ -180,18 +181,20 @@ export const getQuestions = async (
             listWord,
             randomElements,
             word,
-            EVocabTrainerType.SOURCE
+            EVocabTrainerType.SOURCE,
+            index
           );
         } else {
           return handleTexts(
             listWord,
             randomElements,
             word,
-            EVocabTrainerType.TARGET
+            EVocabTrainerType.TARGET,
+            index
           );
         }
       })
-      // .sort(() => Math.random() - 0.5)
+      .sort(() => Math.random() - 0.5)
       .map((item: TQuestions, idx) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json({
@@ -247,17 +250,20 @@ export const updateTestVocabTrainer = async (
 
     const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
       req.params.id
-    )
-      .populate('wordSelects')
+    ).populate('wordSelects');
 
     const newWordResults: TWordResults[] = [];
+
+    const arrangeOrder = wordTestSelects.sort(
+      (a, b) => a.randomOrder - b.randomOrder
+    );
 
     for (let i = 0; i < item.wordSelects.length; i++) {
       const element = item.wordSelects[i];
 
-      for (let j = 0; j < wordTestSelects.length; j++) {
+      for (let j = 0; j < arrangeOrder.length; j++) {
         if (i === j) {
-          const element2 = wordTestSelects[j];
+          const element2 = arrangeOrder[j];
           if (element2.idWord === element._id.toString()) {
             handleWordResult(
               element,
