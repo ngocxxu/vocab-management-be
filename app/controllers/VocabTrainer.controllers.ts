@@ -249,7 +249,6 @@ export const updateTestVocabTrainer = async (
       req.params.id
     )
       .populate('wordSelects')
-      .lean();
 
     const newWordResults: TWordResults[] = [];
 
