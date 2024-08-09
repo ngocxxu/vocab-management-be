@@ -12,6 +12,7 @@ import {
   TVocabRes,
 } from '../types/Vocab.types';
 import { handleError, searchRegex } from '../utils/index';
+import { clearRedisCache, VOCAB_CACHE_PREFIX } from '../utils/redis/constant';
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,
@@ -83,8 +84,6 @@ export const getAllVocab = async (
       : await VocabModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limitNumber);
 
-    
-
     res.status(200).json({
       data,
       totalPages,
@@ -142,6 +141,8 @@ export const addVocab = async (
       textTarget: req.body.textTarget,
     }).save();
 
+    await clearRedisCache(VOCAB_CACHE_PREFIX);
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -160,6 +161,8 @@ export const updateVocab = async (
       textTarget: req.body.textTarget,
     });
 
+    await clearRedisCache(VOCAB_CACHE_PREFIX);
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -172,6 +175,8 @@ export const removeVocab = async (
 ) => {
   try {
     const result = await VocabModel.findByIdAndDelete(req.params.id);
+
+    await clearRedisCache(VOCAB_CACHE_PREFIX);
 
     res.status(200).json(result);
   } catch (err) {
@@ -187,6 +192,8 @@ export const removeMultiVocab = async (
     const result = await VocabModel.deleteMany({
       _id: { $in: req.body },
     });
+
+    await clearRedisCache(VOCAB_CACHE_PREFIX);
 
     res.status(200).json(result);
   } catch (err) {

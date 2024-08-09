@@ -2,14 +2,14 @@ import { redisClient } from '..';
 import express from 'express';
 
 export const cacheMiddleware =
-  <T>(ttl: number = 60) =>
+  <T>(prefix: string, ttl: number = 60) =>
   async (
     req: express.Request<{}, {}, {}, T>,
     res: express.Response,
     next: express.NextFunction
   ) => {
-    const cacheKey = `${req.originalUrl}:${JSON.stringify(req.query)}`;
-    
+    const cacheKey = `${prefix}:${JSON.stringify(req.query)}`;
+
     try {
       const cachedData = await redisClient.get(cacheKey);
 
