@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { SortOrder } from 'mongoose';
 import { EPagination, TStatusResult } from '../enums/Global.enums';
 import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
@@ -6,6 +6,7 @@ import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
 import { VocabTrainerModel } from '../models/VocabTrainer.models';
 import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
+import { TVocabRes } from '../types/Vocab.types';
 import {
   TAddVocabTrainerReq,
   TGetAllVocabTrainerReq,
@@ -19,7 +20,6 @@ import {
   TWordTestSelect,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
-import { TVocabRes } from '../types/Vocab.types';
 
 const handleWordResult = (
   ele: TVocabRes,
@@ -65,9 +65,11 @@ const handleTexts = (
       }
     });
 
+  const sortedTexts = texts.toSorted(() => Math.random() - 0.5);
+
   return {
     randomOrder: index + 1,
-    options: texts.sort(() => Math.random() - 0.5),
+    options: sortedTexts,
     content:
       mode === EVocabTrainerType.SOURCE
         ? word.textTarget.map((item: { text: string }) => item.text)
@@ -254,7 +256,7 @@ export const updateTestVocabTrainer = async (
 
     const newWordResults: TWordResults[] = [];
 
-    const arrangeOrder = wordTestSelects.sort(
+    const arrangeOrder = [...wordTestSelects].sort(
       (a, b) => a.randomOrder - b.randomOrder
     );
 
