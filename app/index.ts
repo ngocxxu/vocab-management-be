@@ -12,6 +12,8 @@ import helmet from 'helmet';
 dotenv.config();
 
 const port = process.env.LOCAL_PORT || 4030;
+const databaseENV = process.env.DATABASE_URL || '';
+const redisENV = process.env.REDIS_URL || 'redis://localhost:6379';
 
 const app = express();
 
@@ -34,7 +36,7 @@ const logger = winston.createLogger({
 });
 
 const client = redis.createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  url: redisENV,
 });
 
 client.on('error', (err) => console.log('Redis Client Error', err));
@@ -53,7 +55,7 @@ async function connectRedis() {
 async function startServer() {
   try {
     await connectRedis();
-    await mongoose.connect(process.env.DATABASE_URL || '');
+    await mongoose.connect(databaseENV);
     console.log('Connected to DB');
 
     app.listen(port, () => {
@@ -84,8 +86,7 @@ app.use(
   (
     err: Error & { status?: number },
     req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
+    res: express.Response
   ) => {
     logger.error(
       `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${

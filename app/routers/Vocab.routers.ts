@@ -8,10 +8,11 @@ import {
   randomVocab,
 } from '../controllers/Vocab.controllers';
 import express from 'express';
+import { cacheMiddleware } from '../middlewares/cacheMiddleware';
 
 const router = express.Router();
 
-router.get('/', getAllVocab);
+router.get('/', cacheMiddleware(60), getAllVocab);
 
 router.get('/:id', getVocab);
 

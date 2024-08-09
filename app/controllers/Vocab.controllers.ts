@@ -83,6 +83,8 @@ export const getAllVocab = async (
       : await VocabModel.countDocuments();
     const totalPages = Math.ceil(totalCount / limitNumber);
 
+    
+
     res.status(200).json({
       data,
       totalPages,
