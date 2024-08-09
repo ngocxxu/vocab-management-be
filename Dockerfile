@@ -12,9 +12,14 @@ COPY . .
 # Set up access Mongo Atlas
 ENV NODE_ENV=development
 
-# Expose the app's database port
+# Expose the app's database
 ARG DATABASE_URL
 EXPOSE ${DATABASE_URL}
+
+# Expose the app's redis
+ARG REDIS_URL
+EXPOSE ${REDIS_URL}
+
 
 # Expose the app's port
 # EXPOSE 4030
