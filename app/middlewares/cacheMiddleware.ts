@@ -8,7 +8,7 @@ export const cacheMiddleware =
     res: express.Response,
     next: express.NextFunction
   ) => {
-    const cacheKey = `${prefix}:${JSON.stringify(req.query)}`;
+    const cacheKey = `${prefix}${JSON.stringify(req.query)}`;
 
     try {
       const cachedData = await redisClient.get(cacheKey);
