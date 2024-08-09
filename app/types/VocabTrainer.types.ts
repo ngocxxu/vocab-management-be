@@ -16,7 +16,7 @@ export type TWordTestSelect = {
 export type TVocabTrainerPopulate = {
   _id: string;
   nameTest: string;
-  status: string;
+  status?: string;
   duration: string;
   updatedAt: string;
   countTime: number;
