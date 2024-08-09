@@ -252,7 +252,9 @@ export const updateTestVocabTrainer = async (
 
     const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
       req.params.id
-    ).populate('wordSelects');
+    )
+      .populate('wordSelects')
+      .lean();
 
     const newWordResults: TWordResults[] = [];
 

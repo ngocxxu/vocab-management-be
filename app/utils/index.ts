@@ -5,7 +5,6 @@ export const handleError = (err: unknown, res: Response) => {
   if (err instanceof Error) {
     console.log(err.message);
     res.status(500).json({ error: err.message });
-    return;
   }
 };
 
@@ -25,7 +24,7 @@ export function getRandomElements<T>(
   count: number,
   targetId: string
 ) {
-  const shuffled = array.sort(() => 0.5 - Math.random());
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
   const target = shuffled.find((item: any) => item.equals(targetId));
   const others = shuffled
     .filter((item: any) => !item.equals(targetId))

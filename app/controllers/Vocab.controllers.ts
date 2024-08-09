@@ -1,9 +1,8 @@
-import { Request, Response } from 'express';
-import { handleError, searchRegex } from '../utils/index';
-import { VocabModel } from '../models/Vocab.models';
+import { Response } from 'express';
 import { SortOrder } from 'mongoose';
-import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
 import { EPagination } from '../enums/Global.enums';
+import { VocabModel } from '../models/Vocab.models';
+import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
 import {
   TAddVocabReq,
   TGetAllVocabReq,
@@ -12,6 +11,7 @@ import {
   TUpdateVocabReq,
   TVocabRes,
 } from '../types/Vocab.types';
+import { handleError, searchRegex } from '../utils/index';
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,

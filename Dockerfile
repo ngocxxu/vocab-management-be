@@ -12,9 +12,9 @@ COPY . .
 # Set up access Mongo Atlas
 ENV NODE_ENV=development
 
-# ARG DATABASE_URL
-# ENV DATABASE_URL $DATABASE_URL
-ENV DATABASE_URL=mongodb+srv://bono:ngoc25@cluster.mongodb.net/vocab_management_db
+# Expose the app's database port
+ARG DATABASE_URL
+EXPOSE ${DATABASE_URL}
 
 # Expose the app's port
 # EXPOSE 4030

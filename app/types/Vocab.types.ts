@@ -35,4 +35,4 @@ export type TRandomVocabReq = TParams & { amount: number };
 export type TRandomVocabRes = { data: TVocabRes[] };
 
 export type TAddVocabReq = Omit<TVocabRes, '_id'>;
-export type TUpdateVocabReq = TAddVocabReq;
+export type TUpdateVocabReq = Partial<TAddVocabReq>;
