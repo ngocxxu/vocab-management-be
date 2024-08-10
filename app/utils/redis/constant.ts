@@ -1,12 +1,27 @@
 import { redisClient } from '../..';
 
+export const TTL = 3600;
 export const VOCAB_CACHE_PREFIX = 'vocab:';
+export const ALL_VOCAB_CACHE_PREFIX = 'all-vocab:';
+export const RANDOM_VOCAB_CACHE_PREFIX = 'random-vocab:';
 export const VOCAB_TRAINER_CACHE_PREFIX = 'vocab-trainer:';
+export const ALL_VOCAB_TRAINER_CACHE_PREFIX = 'all-vocab-trainer:';
+export const QUESTION_VOCAB_TRAINER_CACHE_PREFIX = 'question-vocab-trainer:';
 
 // Hàm helper để xóa tất cả cache liên quan đến vocab
-export const clearRedisCache = async (KEY_CACHE: string) => {
-  const keys = await redisClient.keys(`${KEY_CACHE}*`);
-  if (keys.length > 0) {
-    await redisClient.del(keys);
+export const clearRedisCache = async (KEY_CACHES: string[]): Promise<void> => {
+  try {
+    for (const prefix of KEY_CACHES) {
+      const keys = await redisClient.keys(`${prefix}*`);
+      if (keys.length > 0) {
+        await redisClient.del(keys);
+        console.log(`Deleted ${keys.length} keys with prefix "${prefix}"`);
+      } else {
+        console.log(`No keys found with prefix "${prefix}"`);
+      }
+    }
+  } catch (error) {
+    console.error('Error clearing Redis cache:', error);
+    throw error;
   }
 };

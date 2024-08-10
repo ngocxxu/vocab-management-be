@@ -20,6 +20,7 @@ import {
   TWordTestSelect,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
+import { ALL_VOCAB_TRAINER_CACHE_PREFIX, clearRedisCache, QUESTION_VOCAB_TRAINER_CACHE_PREFIX, VOCAB_TRAINER_CACHE_PREFIX } from '../utils/redis/constant';
 
 const handleWordResult = (
   ele: TVocabRes,
@@ -219,6 +220,12 @@ export const addVocabTrainer = async (
       setCountTime: req.body.setCountTime,
     }).save();
 
+    await clearRedisCache([
+      ALL_VOCAB_TRAINER_CACHE_PREFIX,
+      QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+      VOCAB_TRAINER_CACHE_PREFIX,
+    ]);
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -236,7 +243,11 @@ export const updateVocabTrainer = async (
       textSource: req.body.textSource,
       textTarget: req.body.textTarget,
     });
-
+    await clearRedisCache([
+      ALL_VOCAB_TRAINER_CACHE_PREFIX,
+      QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+      VOCAB_TRAINER_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -310,7 +321,11 @@ export const updateTestVocabTrainer = async (
         },
       }
     ).lean();
-
+    await clearRedisCache([
+      ALL_VOCAB_TRAINER_CACHE_PREFIX,
+      QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+      VOCAB_TRAINER_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -323,7 +338,11 @@ export const removeVocabTrainer = async (
 ) => {
   try {
     const result = await VocabTrainerModel.findByIdAndDelete(req.params.id);
-
+    await clearRedisCache([
+      ALL_VOCAB_TRAINER_CACHE_PREFIX,
+      QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+      VOCAB_TRAINER_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -338,6 +357,11 @@ export const removeMultiVocabTrainer = async (
     const result = await VocabTrainerModel.deleteMany({
       _id: { $in: req.body },
     });
+    await clearRedisCache([
+      ALL_VOCAB_TRAINER_CACHE_PREFIX,
+      QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+      VOCAB_TRAINER_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);

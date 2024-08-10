@@ -12,7 +12,12 @@ import {
   TVocabRes,
 } from '../types/Vocab.types';
 import { handleError, searchRegex } from '../utils/index';
-import { clearRedisCache, VOCAB_CACHE_PREFIX } from '../utils/redis/constant';
+import {
+  ALL_VOCAB_CACHE_PREFIX,
+  clearRedisCache,
+  RANDOM_VOCAB_CACHE_PREFIX,
+  VOCAB_CACHE_PREFIX,
+} from '../utils/redis/constant';
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,
@@ -141,7 +146,11 @@ export const addVocab = async (
       textTarget: req.body.textTarget,
     }).save();
 
-    await clearRedisCache(VOCAB_CACHE_PREFIX);
+    await clearRedisCache([
+      ALL_VOCAB_CACHE_PREFIX,
+      RANDOM_VOCAB_CACHE_PREFIX,
+      VOCAB_CACHE_PREFIX,
+    ]);
 
     res.status(200).json(result);
   } catch (err) {
@@ -161,8 +170,11 @@ export const updateVocab = async (
       textTarget: req.body.textTarget,
     });
 
-    await clearRedisCache(VOCAB_CACHE_PREFIX);
-
+    await clearRedisCache([
+      ALL_VOCAB_CACHE_PREFIX,
+      RANDOM_VOCAB_CACHE_PREFIX,
+      VOCAB_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -176,8 +188,11 @@ export const removeVocab = async (
   try {
     const result = await VocabModel.findByIdAndDelete(req.params.id);
 
-    await clearRedisCache(VOCAB_CACHE_PREFIX);
-
+    await clearRedisCache([
+      ALL_VOCAB_CACHE_PREFIX,
+      RANDOM_VOCAB_CACHE_PREFIX,
+      VOCAB_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -193,8 +208,11 @@ export const removeMultiVocab = async (
       _id: { $in: req.body },
     });
 
-    await clearRedisCache(VOCAB_CACHE_PREFIX);
-
+    await clearRedisCache([
+      ALL_VOCAB_CACHE_PREFIX,
+      RANDOM_VOCAB_CACHE_PREFIX,
+      VOCAB_CACHE_PREFIX,
+    ]);
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);

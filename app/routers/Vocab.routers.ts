@@ -9,15 +9,24 @@ import {
 } from '../controllers/Vocab.controllers';
 import express from 'express';
 import { cacheMiddleware } from '../middlewares/cacheMiddleware';
-import { VOCAB_CACHE_PREFIX } from '../utils/redis/constant';
+import {
+  ALL_VOCAB_CACHE_PREFIX,
+  RANDOM_VOCAB_CACHE_PREFIX,
+  TTL,
+  VOCAB_CACHE_PREFIX,
+} from '../utils/redis/constant';
 
 const router = express.Router();
 
-router.get('/', cacheMiddleware(VOCAB_CACHE_PREFIX, 60), getAllVocab);
+router.get('/', cacheMiddleware(ALL_VOCAB_CACHE_PREFIX, TTL), getAllVocab);
 
-router.get('/:id', getVocab);
+router.get('/:id', cacheMiddleware(VOCAB_CACHE_PREFIX, TTL), getVocab);
 
-router.get('/random/:amount', randomVocab);
+router.get(
+  '/random/:amount',
+  cacheMiddleware(RANDOM_VOCAB_CACHE_PREFIX, TTL),
+  randomVocab
+);
 
 router.post('/', addVocab);
 
