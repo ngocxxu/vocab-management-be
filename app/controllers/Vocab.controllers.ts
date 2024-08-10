@@ -193,6 +193,7 @@ export const removeVocab = async (
       RANDOM_VOCAB_CACHE_PREFIX,
       VOCAB_CACHE_PREFIX,
     ]);
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -213,6 +214,7 @@ export const removeMultiVocab = async (
       RANDOM_VOCAB_CACHE_PREFIX,
       VOCAB_CACHE_PREFIX,
     ]);
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);

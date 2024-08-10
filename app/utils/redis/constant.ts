@@ -8,7 +8,6 @@ export const VOCAB_TRAINER_CACHE_PREFIX = 'vocab-trainer:';
 export const ALL_VOCAB_TRAINER_CACHE_PREFIX = 'all-vocab-trainer:';
 export const QUESTION_VOCAB_TRAINER_CACHE_PREFIX = 'question-vocab-trainer:';
 
-// Hàm helper để xóa tất cả cache liên quan đến vocab
 export const clearRedisCache = async (KEY_CACHES: string[]): Promise<void> => {
   try {
     for (const prefix of KEY_CACHES) {
