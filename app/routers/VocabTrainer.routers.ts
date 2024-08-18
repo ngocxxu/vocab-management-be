@@ -31,11 +31,7 @@ router.get(
   getVocabTrainer
 );
 
-router.get(
-  '/question/:id',
-  cacheMiddleware(QUESTION_VOCAB_TRAINER_CACHE_PREFIX, TTL),
-  getQuestions
-);
+router.get('/question/:id', getQuestions);
 
 router.post('/', addVocabTrainer);
 
