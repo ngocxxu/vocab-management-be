@@ -37,6 +37,14 @@ export type TVocabTrainerRes = {
   wordResults: TWordResults[];
 };
 
+export type TVocabRemiderRes = {
+  _id: string;
+  vocabTrainer: TVocabTrainerRes;
+  disabled: boolean;
+  repeat: number;
+  lastRemind: Date
+}
+
 export type TWordResults = {
   userSelect: string;
   systemSelect: string;

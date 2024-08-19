@@ -1,21 +1,20 @@
-import {
-  removeVocabTrainer,
-  updateVocabTrainer,
-  addVocabTrainer,
-  getVocabTrainer,
-  getAllVocabTrainer,
-  removeMultiVocabTrainer,
-  updateTestVocabTrainer,
-  getQuestions,
-} from '../controllers/VocabTrainer.controllers';
 import express from 'express';
 import {
-  ALL_VOCAB_TRAINER_CACHE_PREFIX,
-  QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
-  TTL,
-  VOCAB_TRAINER_CACHE_PREFIX,
-} from '../utils/redis/constant';
+  addVocabTrainer,
+  getAllVocabTrainer,
+  getQuestions,
+  getVocabTrainer,
+  removeMultiVocabTrainer,
+  removeVocabTrainer,
+  updateTestVocabTrainer,
+  updateVocabTrainer,
+} from '../controllers/VocabTrainer.controllers';
 import { cacheMiddleware } from '../middlewares/cacheMiddleware';
+import {
+  ALL_VOCAB_TRAINER_CACHE_PREFIX,
+  TTL,
+  VOCAB_TRAINER_CACHE_PREFIX
+} from '../utils/redis/constant';
 
 const router = express.Router();
 
