@@ -8,6 +8,7 @@ import vocab from './routers/Vocab.routers';
 import vocabTrainer from './routers/VocabTrainer.routers';
 import winston from 'winston';
 import helmet from 'helmet';
+import './utils/reminder/scheduler'
 
 dotenv.config();
 

@@ -1,23 +1,26 @@
 import nodemailer from 'nodemailer';
 
-const email = process.env.EMAIL_USER || '';
-const pass = process.env.EMAIL_PASSWORD || '';
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: email,
-    pass,
-  },
-});
-
-export const sendReminderEmail = (to:string, subject:string, text:string) => {
+export const sendReminderEmail = (
+  to: string,
+  subject: string,
+  text: string
+) => {
   const mailOptions = {
-    from: email,
+    from: process.env.EMAIL_USER,
     to,
     subject,
     text,
   };
 
-  return transporter.sendMail(mailOptions);
+  const authOptions = {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  };
+
+  return nodemailer
+    .createTransport({
+      service: 'gmail',
+      auth: {...authOptions},
+    })
+    .sendMail(mailOptions);
 };
