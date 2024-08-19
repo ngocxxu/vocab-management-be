@@ -1,6 +1,10 @@
 import { Response } from 'express';
 import { SortOrder } from 'mongoose';
-import { EPagination, TStatusResult } from '../enums/Global.enums';
+import {
+  EPagination,
+  EReminderRepeat,
+  EStatusResult,
+} from '../enums/Global.enums';
 import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
 import { VocabModel } from '../models/Vocab.models';
 import { VocabStatusModel } from '../models/VocabStatus.models';
@@ -14,6 +18,7 @@ import {
   TQuestions,
   TUpdateTestVocabTrainerReq,
   TUpdateVocabTrainerReq,
+  TVocabRemiderRes,
   TVocabTrainerPopulate,
   TVocabTrainerRes,
   TWordResults,
@@ -229,7 +234,7 @@ export const addVocabTrainer = async (
     const savedVocabTrainer = await vocabTrainer.save();
 
     new VocabReminderModel({
-      idVocabTrainer: savedVocabTrainer._id,
+      vocabTrainer: savedVocabTrainer._id,
     }).save();
 
     await clearRedisCache([
@@ -279,6 +284,9 @@ export const updateTestVocabTrainer = async (
       .populate('wordSelects')
       .lean();
 
+    const itemVocabReminder: TVocabRemiderRes =
+      await VocabReminderModel.findById({ vocabTrainer: req.params.id }).lean();
+
     const newWordResults: TWordResults[] = [];
 
     const arrangeOrder = [...wordTestSelects].sort(
@@ -295,14 +303,14 @@ export const updateTestVocabTrainer = async (
             handleWordResult(
               element,
               element2,
-              TStatusResult.PASSED,
+              EStatusResult.PASSED,
               newWordResults
             );
           } else {
             handleWordResult(
               element,
               element2,
-              TStatusResult.FAILED,
+              EStatusResult.FAILED,
               newWordResults
             );
           }
@@ -311,14 +319,28 @@ export const updateTestVocabTrainer = async (
     }
 
     const countCorrectResults = newWordResults.filter(
-      (item: TWordResults) => item.status === TStatusResult.PASSED
+      (item: TWordResults) => item.status === EStatusResult.PASSED
     ).length;
 
     const totalResults = newWordResults.length;
     const statusResult =
       countCorrectResults / totalResults >= 0.7
-        ? TStatusResult.PASSED
-        : TStatusResult.FAILED;
+        ? EStatusResult.PASSED
+        : EStatusResult.FAILED;
+
+    //Reminder user do test
+    if (statusResult === EStatusResult.PASSED) {
+      const updates = {
+        lastRemind: new Date(),
+        ...(itemVocabReminder.repeat >= EReminderRepeat.THIRTY_TWO_DAYS
+          ? { disabled: true }
+          : { repeat: itemVocabReminder.repeat * 2 }),
+      };
+      await VocabReminderModel.findByIdAndUpdate(
+        { vocabTrainer: req.params.id },
+        { $set: updates }
+      );
+    }
 
     const result: TVocabTrainerRes = await VocabTrainerModel.findByIdAndUpdate(
       req.params.id,
@@ -333,6 +355,7 @@ export const updateTestVocabTrainer = async (
         },
       }
     ).lean();
+
     await clearRedisCache([
       ALL_VOCAB_TRAINER_CACHE_PREFIX,
       QUESTION_VOCAB_TRAINER_CACHE_PREFIX,

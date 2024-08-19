@@ -42,7 +42,7 @@ export type TVocabRemiderRes = {
   vocabTrainer: TVocabTrainerRes;
   disabled: boolean;
   repeat: number;
-  lastRemind: string
+  lastRemind: Date
 }
 
 export type TWordResults = {
