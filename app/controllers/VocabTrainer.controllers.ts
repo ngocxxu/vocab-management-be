@@ -20,7 +20,13 @@ import {
   TWordTestSelect,
 } from '../types/VocabTrainer.types';
 import { getRandomElements, handleError, searchRegex } from '../utils/index';
-import { ALL_VOCAB_TRAINER_CACHE_PREFIX, clearRedisCache, QUESTION_VOCAB_TRAINER_CACHE_PREFIX, VOCAB_TRAINER_CACHE_PREFIX } from '../utils/redis/constant';
+import {
+  ALL_VOCAB_TRAINER_CACHE_PREFIX,
+  clearRedisCache,
+  QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
+  VOCAB_TRAINER_CACHE_PREFIX,
+} from '../utils/redis/constant';
+import { VocabReminderModel } from '../models/VocabReminder.models';
 
 const handleWordResult = (
   ele: TVocabRes,
@@ -214,10 +220,16 @@ export const addVocabTrainer = async (
   res: Response
 ) => {
   try {
-    const result = new VocabTrainerModel({
+    const vocabTrainer = new VocabTrainerModel({
       nameTest: req.body.nameTest,
       wordSelects: req.body.wordSelects,
       setCountTime: req.body.setCountTime,
+    });
+
+    const savedVocabTrainer = await vocabTrainer.save();
+
+    new VocabReminderModel({
+      idVocabTrainer: savedVocabTrainer._id,
     }).save();
 
     await clearRedisCache([
@@ -226,7 +238,7 @@ export const addVocabTrainer = async (
       VOCAB_TRAINER_CACHE_PREFIX,
     ]);
 
-    res.status(200).json(result);
+    res.status(200).json(savedVocabTrainer);
   } catch (err) {
     handleError(err, res);
   }
