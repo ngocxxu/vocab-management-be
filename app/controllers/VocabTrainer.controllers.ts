@@ -336,6 +336,7 @@ export const updateTestVocabTrainer = async (
           ? { disabled: true }
           : { repeat: itemVocabReminder.repeat * 2 }),
       };
+
       await VocabReminderModel.findByIdAndUpdate(
         { vocabTrainer: req.params.id },
         { $set: updates }
