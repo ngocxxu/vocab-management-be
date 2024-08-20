@@ -28,32 +28,32 @@ jobs:
       - name: Push the Docker image to Docker Hub
         run: docker push ngocxxu/vocab-management:latest
 
-      - name: Debug SSH
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST_NAME: ${{ secrets.EC2_HOST_NAME }}
-          USER_NAME: ${{ secrets.EC2_USER_NAME }}
-        run: |
-          echo "Debugging SSH connection"
-          echo "$PRIVATE_KEY" > private_key
-          chmod 600 private_key
-          ls -l private_key
-          ssh-keygen -l -f private_key
-          ssh -v -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 'echo "Connection successful"'
+      # - name: Debug SSH
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+      #     HOST_NAME: ${{ secrets.EC2_HOST_NAME }}
+      #     USER_NAME: ${{ secrets.EC2_USER_NAME }}
+      #   run: |
+      #     echo "Debugging SSH connection"
+      #     echo "$PRIVATE_KEY" > private_key
+      #     chmod 600 private_key
+      #     ls -l private_key
+      #     ssh-keygen -l -f private_key
+      #     ssh -v -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 'echo "Connection successful"'
 
-      - name: Deploy to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST_NAME: ${{ secrets.EC2_HOST_NAME }}
-          USER_NAME: ${{ secrets.EC2_USER_NAME }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
-            docker pull ngocxxu/vocab-management:latest
-            docker stop vocab-management || true
-            docker rm vocab-management || true
-            docker run -d --name vocab-management -p 80:4030 ngocxxu/vocab-management:latest
-          '
+      # - name: Deploy to EC2
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+      #     HOST_NAME: ${{ secrets.EC2_HOST_NAME }}
+      #     USER_NAME: ${{ secrets.EC2_USER_NAME }}
+      #   run: |
+      #     echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+      #     ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} '
+      #       docker pull ngocxxu/vocab-management:latest
+      #       docker stop vocab-management || true
+      #       docker rm vocab-management || true
+      #       docker run -d --name vocab-management -p 80:4030 ngocxxu/vocab-management:latest
+      #     '
 
       # - name: Install and configure the Koyeb CLI
       #   uses: koyeb-community/install-koyeb-cli@v2
