@@ -77,7 +77,8 @@ const handleTexts = (
       }
     });
 
-  const sortedTexts = texts.sort(() => Math.random() - 0.5);
+
+  const sortedTexts = [...texts].sort(() => Math.random() - 0.5);
 
   return {
     randomOrder: index + 1,
