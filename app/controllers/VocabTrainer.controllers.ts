@@ -77,7 +77,6 @@ const handleTexts = (
       }
     });
 
-
   const sortedTexts = [...texts].sort(() => Math.random() - 0.5);
 
   return {
@@ -286,7 +285,7 @@ export const updateTestVocabTrainer = async (
       .lean();
 
     const itemVocabReminder: TVocabRemiderRes =
-      await VocabReminderModel.findById({ vocabTrainer: req.params.id }).lean();
+      await VocabReminderModel.findOne({ vocabTrainer: req.params.id }).lean();
 
     const newWordResults: TWordResults[] = [];
 
@@ -338,7 +337,7 @@ export const updateTestVocabTrainer = async (
           : { repeat: itemVocabReminder.repeat * 2 }),
       };
 
-      await VocabReminderModel.findByIdAndUpdate(
+      await VocabReminderModel.findOneAndUpdate(
         { vocabTrainer: req.params.id },
         { $set: updates }
       );
