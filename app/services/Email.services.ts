@@ -20,7 +20,7 @@ export const sendReminderEmail = (
   return nodemailer
     .createTransport({
       service: 'gmail',
-      auth: {...authOptions},
+      auth: { ...authOptions },
     })
     .sendMail(mailOptions);
 };
