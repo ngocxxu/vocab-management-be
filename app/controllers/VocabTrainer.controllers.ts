@@ -226,6 +226,16 @@ export const addVocabTrainer = async (
   res: Response
 ) => {
   try {
+    const existingVocabTrainer = await VocabTrainerModel.findOne({
+      nameTest: req.body.nameTest,
+    });
+
+    if (existingVocabTrainer) {
+      return res.status(400).json({
+        error: 'Name test already exists',
+      });
+    }
+
     const vocabTrainer = new VocabTrainerModel({
       nameTest: req.body.nameTest,
       wordSelects: req.body.wordSelects,
