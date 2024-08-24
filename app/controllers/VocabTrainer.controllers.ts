@@ -227,7 +227,7 @@ export const addVocabTrainer = async (
 ) => {
   try {
     const existingVocabTrainer = await VocabTrainerModel.findOne({
-      nameTest: req.body.nameTest,
+      nameTest: { $regex: new RegExp(`^${req.body.nameTest}$`, 'i') },
     });
 
     if (existingVocabTrainer) {
