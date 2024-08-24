@@ -212,6 +212,7 @@ export const getQuestions = async (
       .map((item: TQuestions, idx) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json({
+      nameTest: item.nameTest,
       questions: result,
       setCountTime: item.setCountTime,
     });

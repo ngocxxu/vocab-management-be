@@ -77,6 +77,7 @@ export type TQuestions = {
 };
 
 export type TGetQuestionsRes = {
+  nameTest: string;
   questions: TQuestions[];
   setCountTime: number;
 };
