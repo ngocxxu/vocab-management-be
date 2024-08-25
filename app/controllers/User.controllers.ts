@@ -1,16 +1,16 @@
 import bcrypt from 'bcryptjs';
-import { AuthModel } from '../models/Auth.models';
+import { Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthModel } from '../models/Auth.models';
 import { UserModel } from '../models/User.models';
+import { TRequest } from '../types/Global.types';
 import {
-  TLoginUserRes,
   TLogoutAllDeviceUserReq,
   TRefreshToken,
   TRegisterUserReq,
   TUserInfoToken,
 } from '../types/User.types';
-import { Response } from 'express';
-import { TRequest, TResponse } from '../types/Global.types';
+import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from '../constants';
 
 export const registerUser = async (
   req: TRequest<{}, TRegisterUserReq, {}>,
@@ -114,7 +114,7 @@ function generateAccessToken(user: TUserInfoToken) {
   return jwt.sign(
     { userId: user._id, username: user.username },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '15m' }
+    { expiresIn: ACCESS_TOKEN_TIME }
   );
 }
 
@@ -122,7 +122,7 @@ function generateRefreshToken(user: TUserInfoToken) {
   return jwt.sign(
     { userId: user._id, username: user.username },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: REFRESH_TOKEN_TIME }
   );
 }
 
