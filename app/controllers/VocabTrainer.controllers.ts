@@ -232,7 +232,7 @@ export const addVocabTrainer = async (
 
     if (existingVocabTrainer) {
       return res.status(400).json({
-        error: 'Name test already exists',
+        message: 'Name test already exists',
       });
     }
 
