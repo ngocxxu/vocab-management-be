@@ -5,6 +5,7 @@ import redis from 'redis';
 import mongoose from 'mongoose';
 import comment from './routers/Comment.routers';
 import vocab from './routers/Vocab.routers';
+import user from './routers/User.routers';
 import vocabTrainer from './routers/VocabTrainer.routers';
 import winston from 'winston';
 import helmet from 'helmet';
@@ -24,6 +25,7 @@ app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
 app.use('/api/comment', comment);
+app.use('/api/user', user);
 app.use('/api/vocab', vocab);
 app.use('/api/vocabTrainer', vocabTrainer);
 
