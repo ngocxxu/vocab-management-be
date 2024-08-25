@@ -1,7 +1,7 @@
-export type TUserInfoToken = { _id: string; username: string }
+export type TUserInfoToken = { _id: string; email: string }
 
 export type TRegisterUserReq = {
-  username: string
+  email: string
   password: string;
 }
 

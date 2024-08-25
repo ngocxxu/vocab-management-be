@@ -17,9 +17,9 @@ export const registerUser = async (
   res: Response
 ) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({ username, password: hashedPassword });
+    const user = new UserModel({ email, password: hashedPassword });
     await user.save();
     res.status(201).send('User registered successfully');
   } catch (error) {
@@ -32,9 +32,9 @@ export const loginUser = async (
   res: Response
 ) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ email });
     if (!user) return res.status(400).json({ message: 'User not found' });
 
     // Check password
@@ -44,11 +44,11 @@ export const loginUser = async (
 
     const accessToken = generateAccessToken({
       _id: user._id.toString(),
-      username: user.username,
+      email: user.email,
     });
     const refreshToken = generateRefreshToken({
       _id: user._id.toString(),
-      username: user.username,
+      email: user.email,
     });
 
     // Save refresh token
@@ -90,14 +90,14 @@ export const refreshTokenUser = async (
 
     const accessToken = generateAccessToken({
       _id: user._id.toString(),
-      username: user.username,
+      email: user.email,
     });
 
     // Create refresh new token and replace old token
     // Increasing security for user
     const newRefreshToken = generateRefreshToken({
       _id: user._id.toString(),
-      username: user.username,
+      email: user.email,
     });
     tokenDoc.token = newRefreshToken;
     tokenDoc.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 ngày
@@ -112,7 +112,7 @@ export const refreshTokenUser = async (
 
 function generateAccessToken(user: TUserInfoToken) {
   return jwt.sign(
-    { userId: user._id, username: user.username },
+    { userId: user._id, email: user.email },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: ACCESS_TOKEN_TIME }
   );
@@ -120,7 +120,7 @@ function generateAccessToken(user: TUserInfoToken) {
 
 function generateRefreshToken(user: TUserInfoToken) {
   return jwt.sign(
-    { userId: user._id, username: user.username },
+    { userId: user._id, email: user.email },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: REFRESH_TOKEN_TIME }
   );
