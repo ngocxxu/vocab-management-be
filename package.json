@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "NODE_ENV=production node build/index.js",
-    "dev": "NODE_ENV=development ts-node-dev --respawn --transpile-only app/index.ts",
+    "dev": "NODE_ENV=development nodemon app/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts"
   },
@@ -41,7 +41,6 @@
     "@types/nodemailer": "^6.4.15",
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }
 }
