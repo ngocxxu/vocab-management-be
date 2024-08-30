@@ -12,6 +12,8 @@ import {
 } from '../types/User.types';
 import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from '../constants';
 
+const env = process.env.NODE_ENVx;
+
 export const registerUser = async (
   req: TRequest<{}, TRegisterUserReq, {}>,
   res: Response
@@ -61,7 +63,7 @@ export const loginUser = async (
     // Setup cookie for refresh token
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true, // only use HTTPS in production
+      secure: env === 'production' || false, // only use HTTPS in production
       sameSite: 'lax', // better usability while still providing reasonable security
       maxAge: 7 * 24 * 60 * 60 * 1000, // TTL 7 days
     });
