@@ -38,4 +38,4 @@ ARG ACCESS_TOKEN_SECRET
 EXPOSE ${REFRESH_TOKEN_SECRET}
 
 # Start the app
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]

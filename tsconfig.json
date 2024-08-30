@@ -3,12 +3,13 @@
     "target": "ESNext",
     "moduleResolution": "node",
     "module": "ESNext",
-    "outDir": "build",
+    "outDir": "./build",
     "rootDir": "app",
     "sourceMap": true,
     "noImplicitAny": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "esModuleInterop": true
   },
   "ts-node": {
     "esm": true,
