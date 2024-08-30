@@ -1,11 +1,14 @@
 import express from 'express';
-import { loginUser, logoutAllDeviceUser, logoutUser, refreshTokenUser, registerUser } from '../controllers/User.controllers';
+import {
+  loginUser,
+  logoutAllDeviceUser,
+  logoutUser,
+  refreshTokenUser,
+  registerUser,
+} from '../controllers/User.controllers';
+import { authenticateToken } from '../middlewares/authenticateToken';
 
 const router = express.Router();
-
-// router.get('/', getAllUsers);
-
-// router.get('/user', authenToken, getUser);
 
 router.post('/register', registerUser);
 
@@ -13,8 +16,8 @@ router.post('/login', loginUser);
 
 router.post('/refresh-token', refreshTokenUser);
 
-router.post('/logout', logoutUser);
+router.post('/logout', authenticateToken, logoutUser);
 
-router.post('/logout-all-device', logoutAllDeviceUser);
+router.post('/logout-all-device', authenticateToken, logoutAllDeviceUser);
 
 export default router;

@@ -15,5 +15,4 @@ export type TLogoutAllDeviceUserReq = {
 
 export type TLoginUserRes = {
   accessToken: string
-  refreshToken: string
 }

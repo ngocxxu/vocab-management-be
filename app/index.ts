@@ -9,7 +9,9 @@ import user from './routers/User.routers';
 import vocabTrainer from './routers/VocabTrainer.routers';
 import winston from 'winston';
 import helmet from 'helmet';
-import './utils/reminder/scheduler'
+import cookieParser from 'cookie-parser';
+import './utils/reminder/scheduler';
+import { authenticateToken } from './middlewares/authenticateToken';
 
 dotenv.config();
 
@@ -19,15 +21,21 @@ const redisENV = process.env.REDIS_URL || 'redis://localhost:6379';
 
 const app = express();
 
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: 'http://your-frontend-domain.com',
+    credentials: true, // Allow cookie
+  })
+);
 app.use(helmet());
 app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
-app.use('/api/comment', comment);
+app.use('/api/comment', authenticateToken, comment);
 app.use('/api/user', user);
-app.use('/api/vocab', vocab);
-app.use('/api/vocabTrainer', vocabTrainer);
+app.use('/api/vocab', authenticateToken, vocab);
+app.use('/api/vocabTrainer', authenticateToken, vocabTrainer);
 
 const logger = winston.createLogger({
   level: 'info',

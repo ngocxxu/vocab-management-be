@@ -9,8 +9,8 @@ RUN npm install
 # Copy the rest of the application's files to the container
 COPY . .
 
-# Set up access Mongo Atlas
-ENV NODE_ENV=development
+# # Set up access Mongo Atlas
+# ENV NODE_ENV=development
 
 # Expose the app's database
 ARG DATABASE_URL
@@ -38,4 +38,4 @@ ARG ACCESS_TOKEN_SECRET
 EXPOSE ${REFRESH_TOKEN_SECRET}
 
 # Start the app
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start"]

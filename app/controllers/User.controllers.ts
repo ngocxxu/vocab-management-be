@@ -58,7 +58,15 @@ export const loginUser = async (
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // TTL 7 days
     });
 
-    res.json({ accessToken, refreshToken });
+    // Setup cookie for refresh token
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true, // only use HTTPS in production
+      sameSite: 'lax', // better usability while still providing reasonable security
+      maxAge: 7 * 24 * 60 * 60 * 1000, // TTL 7 days
+    });
+
+    res.json({ accessToken });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -69,7 +77,7 @@ export const refreshTokenUser = async (
   req: TRequest<{}, TRefreshToken, {}>,
   res: Response
 ) => {
-  const { refreshToken } = req.body;
+  const refreshToken = req.cookies.refreshToken;
 
   try {
     const tokenDoc = await AuthModel.findOne({ token: refreshToken });
@@ -93,17 +101,10 @@ export const refreshTokenUser = async (
       email: user.email,
     });
 
-    // Create refresh new token and replace old token
-    // Increasing security for user
-    const newRefreshToken = generateRefreshToken({
-      _id: user._id.toString(),
-      email: user.email,
-    });
-    tokenDoc.token = newRefreshToken;
     tokenDoc.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // TTL 7 days
     await tokenDoc.save();
 
-    res.json({ accessToken, refreshToken: newRefreshToken });
+    res.json({ accessToken });
   } catch (error) {
     console.error(error);
     res.status(403).json({ message: 'Invalid Refresh Token' });
@@ -130,7 +131,7 @@ export const logoutUser = async (
   req: TRequest<{}, TRefreshToken, {}>,
   res: Response
 ) => {
-  const { refreshToken } = req.body;
+  const refreshToken = req.cookies.refreshToken;
   try {
     await AuthModel.deleteOne({ token: refreshToken });
     res.json({ message: 'Logged out successfully' });
