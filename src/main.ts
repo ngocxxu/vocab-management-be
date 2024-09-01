@@ -15,9 +15,9 @@ import { authenticateToken } from './middlewares/authenticateToken.js';
 
 dotenv.config();
 
-const port = process.env.LOCAL_PORT || 4030;
-const databaseENV = process.env.DATABASE_URL || '';
-const redisENV = process.env.REDIS_URL || 'redis://localhost:6379';
+const port = process.env.LOCAL_PORT ?? 4030;
+const databaseENV = process.env.DATABASE_URL ?? '';
+const redisENV = process.env.REDIS_URL ?? 'redis://localhost:6379';
 const isDevEnvironment =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
 app.use('/api/comment', authenticateToken, comment);
 app.use('/api/user', user);
-app.use('/api/vocab', vocab);
+app.use('/api/vocab', authenticateToken, vocab);
 app.use('/api/vocabTrainer', authenticateToken, vocabTrainer);
 
 const logger = winston.createLogger({
@@ -104,15 +104,15 @@ app.use(
     res: express.Response
   ) => {
     logger.error(
-      `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
+      `${err.status ?? 500} - ${err.message} - ${req.originalUrl} - ${
         req.method
       } - ${req.ip}`
     );
 
     console.error(err.stack);
-    res.status(err.status || 500).json({
+    res.status(err.status ?? 500).json({
       status: 'error',
-      statusCode: err.status || 500,
+      statusCode: err.status ?? 500,
       message: err.message || 'Internal Server Error',
     });
   }
