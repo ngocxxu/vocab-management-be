@@ -116,7 +116,7 @@ export const refreshTokenUser = async (
 function generateAccessToken(user: TUserInfoToken) {
   return jwt.sign(
     { userId: user._id, email: user.email },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET ?? '',
     { expiresIn: ACCESS_TOKEN_TIME }
   );
 }
@@ -124,7 +124,7 @@ function generateAccessToken(user: TUserInfoToken) {
 function generateRefreshToken(user: TUserInfoToken) {
   return jwt.sign(
     { userId: user._id, email: user.email },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET ?? '',
     { expiresIn: REFRESH_TOKEN_TIME }
   );
 }

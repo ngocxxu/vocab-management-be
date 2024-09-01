@@ -80,6 +80,7 @@ export type TGetQuestionsRes = {
   nameTest: string;
   questions: TQuestions[];
   setCountTime: number;
+  message?:string
 };
 
 export type TAddVocabTrainerReq = {

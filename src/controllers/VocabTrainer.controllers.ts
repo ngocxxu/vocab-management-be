@@ -45,7 +45,7 @@ const handleWordResult = (
   }).save();
 
   data.push({
-    userSelect: ele2.userSelect,
+    userSelect: ele2.userSelect ?? '',
     systemSelect:
       ele2.type === EVocabTrainerType.SOURCE
         ? ele.textSource
@@ -53,7 +53,6 @@ const handleWordResult = (
     status: stt,
   });
 };
-
 const handleTexts = (
   listWord: TVocabRes[],
   randomElements: string[],
@@ -117,7 +116,7 @@ export const getAllVocabTrainer = async (
       statusFilterCustom = [statusFilter];
     }
 
-    const isExist = search || statusFilterCustom.length < 3;
+    const isExist = search ?? statusFilterCustom.length < 3;
 
     const skip = (pageNumber - 1) * limitNumber;
 
@@ -130,13 +129,11 @@ export const getAllVocabTrainer = async (
       ],
     };
 
-    const data: TVocabTrainerRes[] = await VocabTrainerModel.find(
-      isExist ? querySearch : {}
-    )
+    const data = (await VocabTrainerModel.find(isExist ? querySearch : {})
       .skip(skip)
       .limit(limitNumber)
       .sort([[`${sortBy}`, orderBy as SortOrder]])
-      .lean();
+      .lean()) as unknown as TVocabTrainerRes[];
 
     const totalCount = isExist
       ? data.length
@@ -156,39 +153,45 @@ export const getAllVocabTrainer = async (
 
 export const getVocabTrainer = async (
   req: TRequest<TParams, {}, {}>,
-  res: Response<TVocabTrainerRes>
+  res: Response<TVocabTrainerRes | null>
 ) => {
   try {
-    const result: TVocabTrainerRes = await VocabTrainerModel.findById({
-      _id: req.params.id,
-    })
+    const result = (await VocabTrainerModel.findById(req.params.id)
       .sort({
         createdAt: -1,
       })
-      .lean();
+      .lean()) as unknown as TVocabTrainerRes;
+
+    if (!result) {
+      return res.status(404).json(null);
+    }
 
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
   }
 };
-
 export const getQuestions = async (
   req: TRequest<TParams, {}, {}>,
-  res: Response<TGetQuestionsRes>
+  res: Response<Partial<TGetQuestionsRes>>
 ) => {
   try {
-    const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
-      req.params.id
-    )
+    const item = (await VocabTrainerModel.findById(req.params.id)
       .populate('wordSelects')
-      .lean();
-    const listWord: TVocabRes[] = await VocabModel.find({}).lean();
+      .lean()) as unknown as TVocabTrainerPopulate;
+
+    if (!item) {
+      return res.status(404).json({ message: 'VocabTrainer not found' });
+    }
+
+    const listWord = (await VocabModel.find(
+      {}
+    ).lean()) as unknown as TVocabRes[];
     const ids = listWord.map((word) => word._id);
 
     const result: TQuestions[] = item.wordSelects
       .map((word, index) => {
-        const randomElements = getRandomElements(ids, 4, word._id);
+        const randomElements = getRandomElements(ids, 4, word._id) as string[];
 
         if (Math.random() < 0.5) {
           return handleTexts(
@@ -209,7 +212,7 @@ export const getQuestions = async (
         }
       })
       .sort(() => Math.random() - 0.5)
-      .map((item: TQuestions, idx) => ({ ...item, order: idx + 1 }));
+      .map((item, idx) => ({ ...item, order: idx + 1 }));
 
     res.status(200).json({
       nameTest: item.nameTest,
@@ -220,7 +223,6 @@ export const getQuestions = async (
     handleError(err, res);
   }
 };
-
 export const addVocabTrainer = async (
   req: TRequest<{}, TAddVocabTrainerReq, {}>,
   res: Response
@@ -289,14 +291,21 @@ export const updateTestVocabTrainer = async (
   try {
     const { wordTestSelects } = req.body;
 
-    const item: TVocabTrainerPopulate = await VocabTrainerModel.findById(
-      req.params.id
-    )
+    const item = (await VocabTrainerModel.findById(req.params.id)
       .populate('wordSelects')
-      .lean();
+      .lean()) as unknown as TVocabTrainerPopulate;
 
-    const itemVocabReminder: TVocabRemiderRes =
-      await VocabReminderModel.findOne({ vocabTrainer: req.params.id }).lean();
+    if (!item) {
+      return res.status(404).json({ message: 'VocabTrainer not found' });
+    }
+
+    const itemVocabReminder = (await VocabReminderModel.findOne({
+      vocabTrainer: req.params.id,
+    }).lean()) as unknown as TVocabRemiderRes;
+
+    if (!itemVocabReminder) {
+      return res.status(404).json({ message: 'VocabReminder not found' });
+    }
 
     const newWordResults: TWordResults[] = [];
 
@@ -354,7 +363,7 @@ export const updateTestVocabTrainer = async (
       );
     }
 
-    const result: TVocabTrainerRes = await VocabTrainerModel.findByIdAndUpdate(
+    const result = (await VocabTrainerModel.findByIdAndUpdate(
       req.params.id,
       {
         $set: {
@@ -365,8 +374,13 @@ export const updateTestVocabTrainer = async (
         $inc: {
           countTime: 1,
         },
-      }
-    ).lean();
+      },
+      { new: true }
+    ).lean()) as unknown as TVocabTrainerRes;
+
+    if (!result) {
+      return res.status(404).json({ message: 'Failed to update VocabTrainer' });
+    }
 
     await clearRedisCache([
       ALL_VOCAB_TRAINER_CACHE_PREFIX,
@@ -378,7 +392,6 @@ export const updateTestVocabTrainer = async (
     handleError(err, res);
   }
 };
-
 export const removeVocabTrainer = async (
   req: TRequest<TParams, {}, {}>,
   res: Response

@@ -15,7 +15,7 @@ export const authenticateToken = (
     return res.sendStatus(401); // Unauthorized if not have token
   }
 
-  jwt.verify(token, ACCESS_TOKEN, (err, user) => {
+  jwt.verify(token, ACCESS_TOKEN ?? '', (err: any, user: any) => {
     if (err) {
       return res.sendStatus(403); // Forbidden if token is invalid
     }

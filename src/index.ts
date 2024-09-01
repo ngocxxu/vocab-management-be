@@ -3,28 +3,32 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import redis from 'redis';
 import mongoose from 'mongoose';
-import comment from './routers/Comment.routers';
-import vocab from './routers/Vocab.routers';
-import user from './routers/User.routers';
-import vocabTrainer from './routers/VocabTrainer.routers';
+import comment from './routers/Comment.routers.ts';
+import vocab from './routers/Vocab.routers.ts';
+import user from './routers/User.routers.ts';
+import vocabTrainer from './routers/VocabTrainer.routers.ts';
 import winston from 'winston';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import './utils/reminder/scheduler';
-import { authenticateToken } from './middlewares/authenticateToken';
+import './utils/reminder/scheduler.ts';
+import { authenticateToken } from './middlewares/authenticateToken.ts';
 
 dotenv.config();
 
 const port = process.env.LOCAL_PORT || 4030;
 const databaseENV = process.env.DATABASE_URL || '';
 const redisENV = process.env.REDIS_URL || 'redis://localhost:6379';
+const isDevEnvironment =
+  !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
 const app = express();
 
 app.use(cookieParser());
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: isDevEnvironment
+      ? 'http://localhost:5173'
+      : 'https://vocab-management.firebaseapp.com',
     credentials: true, // Allow cookie
   })
 );
@@ -34,7 +38,7 @@ app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
 app.use('/api/comment', authenticateToken, comment);
 app.use('/api/user', user);
-app.use('/api/vocab', authenticateToken, vocab);
+app.use('/api/vocab', vocab);
 app.use('/api/vocabTrainer', authenticateToken, vocabTrainer);
 
 const logger = winston.createLogger({

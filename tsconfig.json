@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es6",
+    "module": "esnext",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "module": "ESNext",
-    "outDir": "./build",
-    "rootDir": "app",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
-    "allowJs": true,
-    "esModuleInterop": true
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
-  "include": ["./app/**/*"],
-  "exclude": ["node_module"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

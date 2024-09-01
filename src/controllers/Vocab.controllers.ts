@@ -78,11 +78,11 @@ export const getAllVocab = async (
       ],
     };
 
-    const data: TVocabRes[] = await VocabModel.find(isExist ? querySearch : {})
+    const data = (await VocabModel.find(isExist ? querySearch : {})
       .skip(skip)
       .limit(limitNumber)
       .sort([[`${sortBy}`, orderBy as SortOrder]])
-      .lean();
+      .lean()) as unknown as TVocabRes[];
 
     const totalCount = isExist
       ? data.length
@@ -102,22 +102,21 @@ export const getAllVocab = async (
 
 export const getVocab = async (
   req: TRequest<TParams, {}, {}>,
-  res: Response<TVocabRes>
+  res: Response<TVocabRes | null>
 ) => {
   try {
-    const result: TVocabRes = await VocabModel.findById({
+    const result = await VocabModel.findById({
       _id: req.params.id,
     })
       .sort({
         createdAt: -1,
       })
-      .lean();
+      .lean() as unknown as TVocabRes;
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
   }
 };
-
 export const randomVocab = async (
   req: TRequest<TRandomVocabReq, {}, {}>,
   res: Response<TRandomVocabRes>
