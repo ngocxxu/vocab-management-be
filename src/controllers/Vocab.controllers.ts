@@ -1,8 +1,12 @@
 import { Response } from 'express';
 import { SortOrder } from 'mongoose';
-import { EPagination } from '../enums/Global.enums';
-import { VocabModel } from '../models/Vocab.models';
-import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
+import { EPagination } from '../enums/Global.enums.js';
+import { VocabModel } from '../models/Vocab.models.js';
+import {
+  TDataPaginationRes,
+  TParams,
+  TRequest,
+} from '../types/Global.types.js';
 import {
   TAddVocabReq,
   TGetAllVocabReq,
@@ -11,13 +15,13 @@ import {
   TUpdateVocabReq,
   TVocabRes,
 } from '../types/Vocab.types';
-import { handleError, searchRegex } from '../utils/index';
+import { handleError, searchRegex } from '../utils/utils.js';
 import {
   ALL_VOCAB_CACHE_PREFIX,
   clearRedisCache,
   RANDOM_VOCAB_CACHE_PREFIX,
   VOCAB_CACHE_PREFIX,
-} from '../utils/redis/constant';
+} from '../utils/redis.js';
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,
@@ -105,13 +109,13 @@ export const getVocab = async (
   res: Response<TVocabRes | null>
 ) => {
   try {
-    const result = await VocabModel.findById({
+    const result = (await VocabModel.findById({
       _id: req.params.id,
     })
       .sort({
         createdAt: -1,
       })
-      .lean() as unknown as TVocabRes;
+      .lean()) as unknown as TVocabRes;
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);

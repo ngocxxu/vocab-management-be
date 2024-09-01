@@ -1,16 +1,19 @@
 import bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthModel } from '../models/Auth.models';
-import { UserModel } from '../models/User.models';
-import { TRequest } from '../types/Global.types';
+import { AuthModel } from '../models/Auth.models.js';
+import { UserModel } from '../models/User.models.js';
+import { TRequest } from '../types/Global.types.js';
 import {
   TLogoutAllDeviceUserReq,
   TRefreshToken,
   TRegisterUserReq,
   TUserInfoToken,
-} from '../types/User.types';
-import { ACCESS_TOKEN_TIME, REFRESH_TOKEN_TIME } from '../constants';
+} from '../types/User.types.js';
+import {
+  ACCESS_TOKEN_TIME,
+  REFRESH_TOKEN_TIME,
+} from '../constants/User.contants.js';
 
 const env = process.env.NODE_ENVx;
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { handleError } from '../utils/index';
-import { CommentModel } from '../models/Comment.models';
+import { handleError } from '../utils/utils.js';
+import { CommentModel } from '../models/Comment.models.js';
 
 export const getAllComment = async (req: Request, res: Response) => {
   try {

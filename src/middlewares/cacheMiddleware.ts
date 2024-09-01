@@ -1,4 +1,4 @@
-import { redisClient } from '..';
+import { redisClient } from '../main.js';
 import express from 'express';
 
 export const cacheMiddleware =

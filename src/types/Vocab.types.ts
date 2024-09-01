@@ -1,5 +1,5 @@
-import { EStatusFilter } from '../enums/VocabTrainer.enums';
-import { TOption, TPagination, TParams, TSort } from './Global.types';
+import { EStatusFilter } from '../enums/VocabTrainer.enums.js';
+import { TOption, TPagination, TParams, TSort } from './Global.types.js';
 
 export type TVocabRes = {
   _id: string;

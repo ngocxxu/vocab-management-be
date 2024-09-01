@@ -8,13 +8,13 @@ import {
   removeVocabTrainer,
   updateTestVocabTrainer,
   updateVocabTrainer,
-} from '../controllers/VocabTrainer.controllers';
-import { cacheMiddleware } from '../middlewares/cacheMiddleware';
+} from '../controllers/VocabTrainer.controllers.js';
+import { cacheMiddleware } from '../middlewares/cacheMiddleware.js';
 import {
   ALL_VOCAB_TRAINER_CACHE_PREFIX,
   TTL,
-  VOCAB_TRAINER_CACHE_PREFIX
-} from '../utils/redis/constant';
+  VOCAB_TRAINER_CACHE_PREFIX,
+} from '../utils/redis.js';
 
 const router = express.Router();
 

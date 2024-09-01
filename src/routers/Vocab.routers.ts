@@ -6,15 +6,15 @@ import {
   getAllVocab,
   removeMultiVocab,
   randomVocab,
-} from '../controllers/Vocab.controllers';
+} from '../controllers/Vocab.controllers.js';
 import express from 'express';
-import { cacheMiddleware } from '../middlewares/cacheMiddleware';
+import { cacheMiddleware } from '../middlewares/cacheMiddleware.js';
 import {
   ALL_VOCAB_CACHE_PREFIX,
   RANDOM_VOCAB_CACHE_PREFIX,
   TTL,
   VOCAB_CACHE_PREFIX,
-} from '../utils/redis/constant';
+} from '../utils/redis.js';
 
 const router = express.Router();
 

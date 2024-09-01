@@ -1,4 +1,4 @@
-import { redisClient } from '../..';
+import { redisClient } from '../main.js';
 
 export const TTL = 3600;
 export const VOCAB_CACHE_PREFIX = 'vocab:';

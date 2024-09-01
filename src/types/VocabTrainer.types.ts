@@ -1,6 +1,6 @@
-import { EStatusFilter, EVocabTrainerType } from '../enums/VocabTrainer.enums';
-import { TOption, TPagination, TSort } from './Global.types';
-import { TVocabRes } from './Vocab.types';
+import { EStatusFilter, EVocabTrainerType } from '../enums/VocabTrainer.enums.js';
+import { TOption, TPagination, TSort } from './Global.types.js';
+import { TVocabRes } from './Vocab.types.js';
 
 export type TupdateTestVocabTrainer = {
   duration: string;

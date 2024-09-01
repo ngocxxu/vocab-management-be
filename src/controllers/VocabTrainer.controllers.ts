@@ -4,13 +4,17 @@ import {
   EPagination,
   EReminderRepeat,
   EStatusResult,
-} from '../enums/Global.enums';
-import { EVocabTrainerType } from '../enums/VocabTrainer.enums';
-import { VocabModel } from '../models/Vocab.models';
-import { VocabStatusModel } from '../models/VocabStatus.models';
-import { VocabTrainerModel } from '../models/VocabTrainer.models';
-import { TDataPaginationRes, TParams, TRequest } from '../types/Global.types';
-import { TVocabRes } from '../types/Vocab.types';
+} from '../enums/Global.enums.js';
+import { EVocabTrainerType } from '../enums/VocabTrainer.enums.js';
+import { VocabModel } from '../models/Vocab.models.js';
+import { VocabStatusModel } from '../models/VocabStatus.models.js';
+import { VocabTrainerModel } from '../models/VocabTrainer.models.js';
+import {
+  TDataPaginationRes,
+  TParams,
+  TRequest,
+} from '../types/Global.types.js';
+import { TVocabRes } from '../types/Vocab.types.js';
 import {
   TAddVocabTrainerReq,
   TGetAllVocabTrainerReq,
@@ -23,15 +27,15 @@ import {
   TVocabTrainerRes,
   TWordResults,
   TWordTestSelect,
-} from '../types/VocabTrainer.types';
-import { getRandomElements, handleError, searchRegex } from '../utils/index';
+} from '../types/VocabTrainer.types.js';
+import { getRandomElements, handleError, searchRegex } from '../utils/utils.js';
 import {
   ALL_VOCAB_TRAINER_CACHE_PREFIX,
   clearRedisCache,
   QUESTION_VOCAB_TRAINER_CACHE_PREFIX,
   VOCAB_TRAINER_CACHE_PREFIX,
-} from '../utils/redis/constant';
-import { VocabReminderModel } from '../models/VocabReminder.models';
+} from '../utils/redis.js';
+import { VocabReminderModel } from '../models/VocabReminder.models.js';
 
 const handleWordResult = (
   ele: TVocabRes,

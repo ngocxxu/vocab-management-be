@@ -6,8 +6,8 @@
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    // "allowImportingTsExtensions": true,
+    // "noEmit": true
   },
   "ts-node": {
     "esm": true,

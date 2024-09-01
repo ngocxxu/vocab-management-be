@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
-import { TUserInfoToken } from '../types/User.types';
+import { TUserInfoToken } from '../types/User.types.js';
 
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN_SECRET;
 

@@ -3,15 +3,15 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import redis from 'redis';
 import mongoose from 'mongoose';
-import comment from './routers/Comment.routers.ts';
-import vocab from './routers/Vocab.routers.ts';
-import user from './routers/User.routers.ts';
-import vocabTrainer from './routers/VocabTrainer.routers.ts';
+import comment from './routers/Comment.routers.js';
+import vocab from './routers/Vocab.routers.js';
+import user from './routers/User.routers.js';
+import vocabTrainer from './routers/VocabTrainer.routers.js';
 import winston from 'winston';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
-import './utils/reminder/scheduler.ts';
-import { authenticateToken } from './middlewares/authenticateToken.ts';
+import './utils/reminder/scheduler.js';
+import { authenticateToken } from './middlewares/authenticateToken.js';
 
 dotenv.config();
 

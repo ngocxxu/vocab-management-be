@@ -1,14 +1,14 @@
 import cron from 'node-cron';
-import { EXAM_URL } from '../../constants';
-import { VocabReminderModel } from '../../models/VocabReminder.models';
-import { sendReminderEmail } from '../../services/Email.services';
-import { TVocabRemiderRes } from '../../types/VocabTrainer.types';
+import { EXAM_URL } from '../../constants/User.contants.js';
+import { VocabReminderModel } from '../../models/VocabReminder.models.js';
+import { sendReminderEmail } from '../../services/Email.services.js';
+import { TVocabRemiderRes } from '../../types/VocabTrainer.types.js';
 
 const sendReminders = async () => {
   const today = new Date();
-  const data = await VocabReminderModel.find({})
+  const data = (await VocabReminderModel.find({})
     .populate('vocabTrainer')
-    .lean() as unknown as TVocabRemiderRes[];
+    .lean()) as unknown as TVocabRemiderRes[];
 
   data.forEach((test) => {
     if (!test.disabled) {
