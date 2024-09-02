@@ -22,9 +22,9 @@ export const registerUser = async (
   res: Response
 ) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, name } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new UserModel({ email, password: hashedPassword });
+    const user = new UserModel({ name, email, password: hashedPassword });
     await user.save();
     res.status(201).send('User registered successfully');
   } catch (error) {
@@ -71,7 +71,7 @@ export const loginUser = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // TTL 7 days
     });
 
-    res.json({ accessToken, email: user.email });
+    res.json({ accessToken, email: user.email, name: user.name });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

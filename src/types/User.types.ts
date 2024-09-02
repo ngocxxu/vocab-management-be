@@ -3,6 +3,7 @@ export type TUserInfoToken = { _id: string; email: string }
 export type TRegisterUserReq = {
   email: string
   password: string;
+  name:string
 }
 
 export type TRefreshToken = {
