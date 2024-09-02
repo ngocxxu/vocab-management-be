@@ -402,6 +402,9 @@ export const removeVocabTrainer = async (
 ) => {
   try {
     const result = await VocabTrainerModel.findByIdAndDelete(req.params.id);
+
+    await VocabReminderModel.findOneAndDelete({ vocabTrainer: req.params.id });
+
     await clearRedisCache([
       ALL_VOCAB_TRAINER_CACHE_PREFIX,
       QUESTION_VOCAB_TRAINER_CACHE_PREFIX,

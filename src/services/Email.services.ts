@@ -5,6 +5,8 @@ export const sendReminderEmail = (
   subject: string,
   text: string
 ) => {
+  const mail = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASSWORD;
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
@@ -13,8 +15,8 @@ export const sendReminderEmail = (
   };
 
   const authOptions = {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    user: mail,
+    pass,
   };
 
   return nodemailer

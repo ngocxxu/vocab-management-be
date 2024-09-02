@@ -71,7 +71,7 @@ export const loginUser = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // TTL 7 days
     });
 
-    res.json({ accessToken });
+    res.json({ accessToken, email: user.email });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
