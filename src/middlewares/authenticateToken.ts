@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import express from 'express';
 import { TUserInfoToken } from '../types/User.types.js';
 
-
 export const authenticateToken = (
   req: express.Request<{}, {}, {}, {}>,
   res: express.Response,
@@ -23,7 +22,14 @@ export const authenticateToken = (
   jwt.verify(token, ACCESS_TOKEN, (err: any, user: any) => {
     if (err) {
       console.error('Error verifying token:', err);
-      return res.sendStatus(403); // Forbidden if token is invalid
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Token expired' });
+      } else if (err.name === 'JsonWebTokenError') {
+        return res.status(403).json({ message: 'Invalid token' });
+      } else if (err.name === 'NotBeforeError') {
+        return res.status(401).json({ message: 'Token not yet active' });
+      }
+      return res.status(403).json({ message: 'Token verification failed' });
     }
 
     (req as express.Request & { user: TUserInfoToken }).user =

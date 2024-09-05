@@ -84,21 +84,25 @@ export const refreshTokenUser = async (
 ) => {
   const refreshToken = req.cookies.refreshToken;
 
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Refresh token not provided' });
+  }
+
   try {
     const tokenDoc = await AuthModel.findOne({ token: refreshToken });
 
     if (!tokenDoc) {
-      return res.status(403).json({ message: 'Invalid refresh token' });
+      return res.status(401).json({ message: 'Invalid refresh token' });
     }
 
     if (tokenDoc.expiresAt < new Date()) {
       await AuthModel.deleteOne({ _id: tokenDoc._id });
-      return res.status(403).json({ message: 'Refresh token expired' });
+      return res.status(401).json({ message: 'Refresh token expired' });
     }
 
     const user = await UserModel.findById(tokenDoc.userId);
     if (!user) {
-      return res.status(403).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     const accessToken = generateAccessToken({
@@ -111,8 +115,8 @@ export const refreshTokenUser = async (
 
     res.json({ accessToken });
   } catch (error) {
-    console.error(error);
-    res.status(403).json({ message: 'Invalid Refresh Token' });
+    console.error('Error refreshing token:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
