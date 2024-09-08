@@ -185,7 +185,7 @@ export const getQuestions = async (
       .lean()) as unknown as TVocabTrainerPopulate;
 
     if (!item) {
-      return res.status(404).json({ message: 'VocabTrainer not found' });
+      return res.status(404).json({ message: 'Your test is not found!' });
     }
 
     const listWord = (await VocabModel.find(
