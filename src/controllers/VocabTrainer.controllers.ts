@@ -191,6 +191,7 @@ export const getQuestions = async (
     const listWord = (await VocabModel.find(
       {}
     ).lean()) as unknown as TVocabRes[];
+
     const ids = listWord.map((word) => word._id);
 
     const result: TQuestions[] = item.wordSelects
