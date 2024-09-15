@@ -85,19 +85,19 @@ export const refreshTokenUser = async (
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: 'Refresh token not provided' });
+    return res.status(403).json({ message: 'Refresh token not provided' });
   }
 
   try {
     const tokenDoc = await AuthModel.findOne({ token: refreshToken });
 
     if (!tokenDoc) {
-      return res.status(401).json({ message: 'Invalid refresh token' });
+      return res.status(403).json({ message: 'Invalid refresh token' });
     }
 
     if (tokenDoc.expiresAt < new Date()) {
       await AuthModel.deleteOne({ _id: tokenDoc._id });
-      return res.status(401).json({ message: 'Refresh token expired' });
+      return res.status(403).json({ message: 'Refresh token expired' });
     }
 
     const user = await UserModel.findById(tokenDoc.userId);
