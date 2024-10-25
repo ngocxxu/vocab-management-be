@@ -12,6 +12,7 @@ RUN npm run build
 FROM node:19-slim
 WORKDIR /root
 COPY --from=builder /app/dist ./
+COPY --from=builder /app/package*.json ./
 
 ENV DATABASE_URL=${DATABASE_URL}
 ENV REDIS_URL=${REDIS_URL}
