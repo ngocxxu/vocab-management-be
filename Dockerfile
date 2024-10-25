@@ -9,7 +9,7 @@ RUN npm install
 # Build stage
 COPY . .
 RUN npm run build
-RUN ls -l dist  # Kiểm tra xem file main.js có tồn tại
+RUN ls -l dist
 
 # Final stage
 FROM node:19-slim
