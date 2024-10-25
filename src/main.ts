@@ -36,10 +36,10 @@ app.use(helmet());
 app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
-app.use('/comment', authenticateToken, comment);
-app.use('/user', user);
-app.use('/vocab', authenticateToken, vocab);
-app.use('/vocabTrainer', authenticateToken, vocabTrainer);
+app.use('/app1/comment', authenticateToken, comment);
+app.use('/app1/user', user);
+app.use('/app1/vocab', authenticateToken, vocab);
+app.use('/app1/vocabTrainer', authenticateToken, vocabTrainer);
 
 const logger = winston.createLogger({
   level: 'info',
