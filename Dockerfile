@@ -21,4 +21,4 @@ ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV ACCESS_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
 
-CMD ["npm", "run", "start"]
+CMD ["node", "/root/dist/main.js"]
