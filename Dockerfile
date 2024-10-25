@@ -1,25 +1,17 @@
-# Dependency stage
-FROM node:19 AS builder
-WORKDIR /app
-
-# Sao chép package.json và package-lock.json (nếu có)
-COPY ./package*.json ./
+# Use an official Node.js runtime as the base image
+FROM node:19
+# Set the working directory in the container
+WORKDIR /src
+# Copy the package.json and package-lock.json files to the container
+COPY ./package.json .
+# Install the app's dependencies
 RUN npm install
-
-# Build stage
+# Copy the rest of the application's files to the container
 COPY . .
-RUN npm run build
-RUN ls -l dist
 
-# Final stage
-FROM node:19-slim
-WORKDIR /root
+# # Set up access Mongo Atlas
+# ENV NODE_ENV=development
 
-# Sao chép các file từ giai đoạn builder
-COPY --from=builder /app/dist ./
-COPY --from=builder /app/package*.json ./
-
-# Thiết lập biến môi trường
 ENV DATABASE_URL=${DATABASE_URL}
 ENV REDIS_URL=${REDIS_URL}
 ENV LOCAL_PORT=${LOCAL_PORT}
@@ -27,5 +19,5 @@ ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 ENV ACCESS_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
 
-# Chạy ứng dụng
-CMD ["node", "/root/dist/main.js"]
+# Start the app
+CMD ["npm", "run", "start"]
