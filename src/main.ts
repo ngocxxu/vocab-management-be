@@ -7,6 +7,7 @@ import comment from './routers/Comment.routers.js';
 import vocab from './routers/Vocab.routers.js';
 import user from './routers/User.routers.js';
 import vocabTrainer from './routers/VocabTrainer.routers.js';
+import vocabSubject from './routers/VocabSubject.routers.js';
 import winston from 'winston';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -40,6 +41,7 @@ app.use('/app1/comment', authenticateToken, comment);
 app.use('/app1/user', user);
 app.use('/app1/vocab', authenticateToken, vocab);
 app.use('/app1/vocabTrainer', authenticateToken, vocabTrainer);
+app.use('/app1/vocabSubject', authenticateToken, vocabSubject);
 
 const logger = winston.createLogger({
   level: 'info',
