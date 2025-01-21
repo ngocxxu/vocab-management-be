@@ -1,32 +1,21 @@
+import express from 'express';
 import {
+  addVocab,
+  getAllVocab,
+  getVocab,
+  randomVocab,
+  removeMultiVocab,
   removeVocab,
   updateVocab,
-  addVocab,
-  getVocab,
-  getAllVocab,
-  removeMultiVocab,
-  randomVocab,
 } from '../controllers/Vocab.controllers.js';
-import express from 'express';
-import { cacheMiddleware } from '../middlewares/cacheMiddleware.js';
-import {
-  ALL_VOCAB_CACHE_PREFIX,
-  RANDOM_VOCAB_CACHE_PREFIX,
-  TTL,
-  VOCAB_CACHE_PREFIX,
-} from '../utils/redis.js';
 
 const router = express.Router();
 
-router.get('/', cacheMiddleware(ALL_VOCAB_CACHE_PREFIX, TTL), getAllVocab);
+router.get('/', getAllVocab);
 
-router.get('/:id', cacheMiddleware(VOCAB_CACHE_PREFIX, TTL), getVocab);
+router.get('/:id', getVocab);
 
-router.get(
-  '/random/:amount',
-  cacheMiddleware(RANDOM_VOCAB_CACHE_PREFIX, TTL),
-  randomVocab
-);
+router.get('/random/:amount', randomVocab);
 
 router.post('/', addVocab);
 

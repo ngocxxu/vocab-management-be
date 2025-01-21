@@ -9,26 +9,12 @@ import {
   updateTestVocabTrainer,
   updateVocabTrainer,
 } from '../controllers/VocabTrainer.controllers.js';
-import { cacheMiddleware } from '../middlewares/cacheMiddleware.js';
-import {
-  ALL_VOCAB_TRAINER_CACHE_PREFIX,
-  TTL,
-  VOCAB_TRAINER_CACHE_PREFIX,
-} from '../utils/redis.js';
 
 const router = express.Router();
 
-router.get(
-  '/',
-  cacheMiddleware(ALL_VOCAB_TRAINER_CACHE_PREFIX, TTL),
-  getAllVocabTrainer
-);
+router.get('/', getAllVocabTrainer);
 
-router.get(
-  '/:id',
-  cacheMiddleware(VOCAB_TRAINER_CACHE_PREFIX, TTL),
-  getVocabTrainer
-);
+router.get('/:id', getVocabTrainer);
 
 router.get('/question/:id', getQuestions);
 
