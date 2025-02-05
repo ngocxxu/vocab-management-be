@@ -113,7 +113,6 @@ export const reorderVocabSubject = async (req: Request, res: Response) => {
     // Send response with updated items
     res.status(200).json({
       items: safeUpdatedItems
-        .sort((a, b) => a.order - b.order)
         .map((item, index) => ({
           ...item,
           id: index + 1,
