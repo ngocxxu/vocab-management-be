@@ -32,3 +32,26 @@ export function getRandomElements<T>(
 
   return [...others, target];
 }
+
+export function safeSerialize<T>(data: T): T {
+  try {
+    return JSON.parse(
+      JSON.stringify(data, (key, value) => {
+        // Remove function and symbol
+        if (typeof value === 'function' || typeof value === 'symbol') {
+          return undefined;
+        }
+
+        // Convert ObjectId to string
+        if (value && value.$oid) {
+          return value.$oid;
+        }
+
+        return value;
+      })
+    );
+  } catch (error) {
+    console.error('Serialization error', error);
+    throw error;
+  }
+}

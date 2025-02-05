@@ -1,15 +1,18 @@
 import { Request, Response } from 'express';
-import { handleError } from '../utils/utils.js';
-import { VocabSubjectModel } from '../models/VocabSubject.models.js';
 import mongoose from 'mongoose';
+import { VocabSubjectModel } from '../models/VocabSubject.models.js';
+import { TVocabSubject } from '../types/VocabSubject.types.js';
+import { handleError, safeSerialize } from '../utils/utils.js';
 
 export const getAllVocabSubject = async (req: Request, res: Response) => {
   try {
     const subjects = await VocabSubjectModel.find().select('-__v').lean();
-    const result = subjects.map((subject, index) => ({
-      ...subject,
-      id: index + 1,
-    }));
+    const result = subjects
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .map((subject, index) => ({
+        ...subject,
+        id: index + 1,
+      }));
 
     res.status(200).json(result);
   } catch (err) {
@@ -22,13 +25,10 @@ export const addToVocabSubject = async (req: Request, res: Response) => {
   session.startTransaction();
 
   try {
-    // Increment all existing items' orders
-    await VocabSubjectModel.updateMany({}, { $inc: { order: 1 } }, { session });
-
     // Add new item with order 1
     const newSubject = await new VocabSubjectModel({
       name: req.body.name,
-      order: 1,
+      order: req.body.order,
     }).save({ session });
 
     await session.commitTransaction();
@@ -95,29 +95,6 @@ export const reorderVocabSubject = async (req: Request, res: Response) => {
       });
     }
 
-    // Prepare bulk write operations
-    const bulkOps = items.map((item) => ({
-      updateOne: {
-        filter: { _id: item._id },
-        update: {
-          $set: {
-            order: item.order,
-          },
-        },
-      },
-    }));
-
-    // Execute bulk write operation
-    const bulkWriteResult = await VocabSubjectModel.bulkWrite(bulkOps, {
-      session,
-    });
-
-    // Log the reordering operation
-    console.info('Vocab subjects reordered', {
-      itemsCount: items.length,
-      modifiedCount: bulkWriteResult.modifiedCount,
-    });
-
     // Fetch and return updated items to ensure frontend has latest data
     const updatedItems = await VocabSubjectModel.find({
       _id: { $in: items.map((item) => item._id) },
@@ -128,22 +105,42 @@ export const reorderVocabSubject = async (req: Request, res: Response) => {
     // Commit the transaction
     await session.commitTransaction();
 
+    // Convert safe data
+    const safeUpdatedItems = safeSerialize<TVocabSubject[]>(
+      updatedItems as unknown as TVocabSubject[]
+    );
+
     // Send response with updated items
     res.status(200).json({
-      message: 'Subjects reordered successfully',
-      items: updatedItems.map((item, index) => ({
-        ...item,
-        id: index,
-      })),
-      modifiedCount: bulkWriteResult.modifiedCount,
+      items: safeUpdatedItems
+        .sort((a, b) => a.order - b.order)
+        .map((item, index) => ({
+          ...item,
+          id: index + 1,
+        })),
     });
   } catch (err) {
-    await session.abortTransaction();
-
     console.error('Error reordering vocab subjects', {
-      error: err,
       requestBody: req.body,
+      errorDetails: {
+        type: typeof err,
+        constructorName: err?.constructor?.name,
+        stringValue: String(err),
+        jsonValue: JSON.stringify(err, Object.getOwnPropertyNames(err)),
+      },
     });
+
+    // Only abort transaction if it's still active
+    if (session.inTransaction()) {
+      try {
+        await session.abortTransaction();
+      } catch (abortError) {
+        console.error('Error aborting transaction', {
+          errorMessage:
+            abortError instanceof Error ? abortError.message : 'Unknown error',
+        });
+      }
+    }
 
     handleError(err, res);
   } finally {

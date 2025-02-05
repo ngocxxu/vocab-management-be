@@ -15,7 +15,7 @@ router.post('/', addToVocabSubject);
 
 router.put('/:id', updateToVocabSubject);
 
-router.put('/reorder', reorderVocabSubject);
+router.patch('/reorder', reorderVocabSubject);
 
 router.delete('/:id', removeToVocabSubject);
 

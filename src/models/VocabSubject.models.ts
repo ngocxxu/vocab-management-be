@@ -2,19 +2,14 @@ import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
-      required: true,
+      require: true,
       trim: true,
     },
     order: {
       type: Number,
-      default: 0,
+      require: true,
     },
   },
   { timestamps: true }
