@@ -7,14 +7,14 @@ import { handleError, safeSerialize } from '../utils/utils.js';
 export const getAllVocabSubject = async (req: Request, res: Response) => {
   try {
     const subjects = await VocabSubjectModel.find().select('-__v').lean();
-    const result = subjects
+    const data = subjects
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .map((subject, index) => ({
         ...subject,
         id: index + 1,
       }));
 
-    res.status(200).json(result);
+    res.status(200).json({ data });
   } catch (err) {
     handleError(err, res);
   }
@@ -112,11 +112,10 @@ export const reorderVocabSubject = async (req: Request, res: Response) => {
 
     // Send response with updated items
     res.status(200).json({
-      items: safeUpdatedItems
-        .map((item, index) => ({
-          ...item,
-          id: index + 1,
-        })),
+      items: safeUpdatedItems.map((item, index) => ({
+        ...item,
+        id: index + 1,
+      })),
     });
   } catch (err) {
     console.error('Error reordering vocab subjects', {
