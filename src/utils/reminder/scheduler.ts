@@ -6,48 +6,60 @@ import { TVocabRemiderRes } from '../../types/VocabTrainer.types.js';
 import { UserModel } from '../../models/User.models.js';
 
 const sendReminders = async () => {
-  const today = new Date();
-  const data = (await VocabReminderModel.find({})
-    .populate('vocabTrainer')
-    .lean()) as unknown as TVocabRemiderRes[];
-  const users = await UserModel.find({}).lean();
+  try {
+    const today = new Date();
+    const data = (await VocabReminderModel.find({})
+      .populate('vocabTrainer')
+      .lean()) as unknown as TVocabRemiderRes[];
+    const users = await UserModel.find({}).lean();
 
-  data.forEach((test) => {
-    if (!test.disabled) {
-      const name = test.vocabTrainer.nameTest;
-      const daysSinceLastReminder =
-        (today.getTime() - test.lastRemind.getTime()) / (1000 * 60 * 60 * 24);
+    for (const test of data) {
+      // Add null checks
+      if (!test.disabled && test.vocabTrainer && test.lastRemind) {
+        const name = test.vocabTrainer.nameTest || 'Unnamed Test';
 
-      if (daysSinceLastReminder >= test.repeat) {
-        const subject = `Reminder: Complete your test - "${name}"`;
+        // Ensure lastRemind is a valid date
+        const lastRemindDate =
+          test.lastRemind instanceof Date
+            ? test.lastRemind
+            : new Date(test.lastRemind);
 
-        users.forEach((user) => {
-          const text = `
-            Hello ${user.email},
-            This is a reminder to complete your test: "${name}".
-            Repeat: ${test.repeat} days
-            Please click on the following link to complete your test: ${EXAM_URL.replace(
-              ':id',
-              test.vocabTrainer._id
-            )}`;
+        const daysSinceLastReminder =
+          (today.getTime() - lastRemindDate.getTime()) / (1000 * 60 * 60 * 24);
 
-          sendReminderEmail(user.email, subject, text)
-            .then(async () => {
+        if (daysSinceLastReminder >= test.repeat) {
+          const subject = `Reminder: Complete your test - "${name}"`;
+
+          for (const user of users) {
+            try {
+              const text = `
+                Hello ${user.email},
+                This is a reminder to complete your test: "${name}".
+                Repeat: ${test.repeat} days
+                Please click on the following link to complete your test: ${EXAM_URL.replace(
+                  ':id',
+                  test.vocabTrainer._id
+                )}`;
+
+              await sendReminderEmail(user.email, subject, text);
+
               // Update the last reminder date
               await VocabReminderModel.findByIdAndUpdate(test._id, {
                 lastRemind: today,
               });
-            })
-            .catch((error) =>
+            } catch (emailError) {
               console.error(
                 `Error sending email to ${user.email} for ${name}:`,
-                error
-              )
-            );
-        });
+                emailError
+              );
+            }
+          }
+        }
       }
     }
-  });
+  } catch (error) {
+    console.error('Error in sendReminders:', error);
+  }
 };
 
 // Everyday at 9am
