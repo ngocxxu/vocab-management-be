@@ -16,7 +16,7 @@ router.get('/', getAllVocab);
 
 router.get('/:id', getVocab);
 
-router.get('/:subjectId', getAllVocabByOneSubject);
+router.get('/subject/:subjectId', getAllVocabByOneSubject);
 
 router.get('/random/:amount', randomVocab);
 
