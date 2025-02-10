@@ -137,6 +137,38 @@ export const randomVocab = async (
   }
 };
 
+export const getAllVocabByOneSubject = async (
+  req: TRequest<{ subjectId: string }, {}, {}>,
+  res: Response
+) => {
+  try {
+    const { subjectId } = req.params;
+
+    const querySearch = {
+      $and: [
+        {
+          'textTarget.subject': {
+            $elemMatch: { label: subjectId },
+          },
+        },
+        {
+          'textTarget.subject': {
+            $size: 1,
+          },
+        },
+      ],
+    };
+
+    const data = await VocabModel.find(querySearch);
+
+    res.status(200).json({
+      data,
+    });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 export const addVocab = async (
   req: TRequest<{}, TAddVocabReq, {}>,
   res: Response

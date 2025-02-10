@@ -3,6 +3,7 @@ import {
   addVocab,
   getAllVocab,
   getVocab,
+  getAllVocabByOneSubject,
   randomVocab,
   removeMultiVocab,
   removeVocab,
@@ -14,6 +15,8 @@ const router = express.Router();
 router.get('/', getAllVocab);
 
 router.get('/:id', getVocab);
+
+router.get('/:subjectId', getAllVocabByOneSubject);
 
 router.get('/random/:amount', randomVocab);
 
