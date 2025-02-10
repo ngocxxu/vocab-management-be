@@ -72,7 +72,7 @@ export const getAllVocab = async (
         {
           textTarget: {
             $elemMatch: {
-              subject: { $elemMatch: { value: { $in: subjectFilterCustom } } },
+              subject: { $elemMatch: { label: { $in: subjectFilterCustom } } },
             },
           },
         },
