@@ -1,0 +1,23 @@
+name: Deploy to AWS Lambda
+on:
+  push:
+    branches: [abc]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Serverless Framework
+        run: npm install -g serverless
+      - name: Deploy to AWS
+        run: serverless deploy --stage dev
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ALLOWED_ORIGINS: ${{ secrets.ALLOWED_ORIGINS }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}

@@ -2,17 +2,19 @@
   "compilerOptions": {
     "target": "es6",
     "module": "esnext",
-    "outDir": "dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    // "allowImportingTsExtensions": true,
-    // "noEmit": true
+    "skipLibCheck": true,         
+    "sourceMap": false,           
+    "allowJs": false             
   },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]  
 }

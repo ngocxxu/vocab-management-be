@@ -1,0 +1,12 @@
+import express from 'express';
+import { addVocabTrainer, getAllVocabTrainer, getQuestions, getVocabTrainer, removeMultiVocabTrainer, removeVocabTrainer, updateTestVocabTrainer, updateVocabTrainer, } from '../controllers/VocabTrainer.controllers.js';
+const router = express.Router();
+router.get('/', getAllVocabTrainer);
+router.get('/:id', getVocabTrainer);
+router.get('/question/:id', getQuestions);
+router.post('/', addVocabTrainer);
+router.put('/:id', updateVocabTrainer);
+router.patch('/test/:id', updateTestVocabTrainer);
+router.delete('/:id', removeVocabTrainer);
+router.post('/deleteIds', removeMultiVocabTrainer);
+export default router;
