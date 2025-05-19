@@ -31,21 +31,10 @@ provider:
         - logs:PutLogEvents
         Resource:
         - "arn:aws:logs:${self:provider.region}:*:log-group:/aws/lambda/${self:service}-${self:provider.stage}-*:*"
-      - Effect: Allow
-        Action:
-        - s3:PutObject
-        - s3:GetObject
-        - s3:DeleteObject
-        - s3:ListBucket
-        Resource:
-        - "arn:aws:s3:::${env:S3_BUCKET_NAME}"
-        - "arn:aws:s3:::${env:S3_BUCKET_NAME}/*"
 
 functions:
   api:
     handler: dist/lambda.handler
-    environment:
-      S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
     events:
     - httpApi:
         path: /{proxy+}
@@ -56,17 +45,6 @@ functions:
 
 resources:
   Resources:
-    VocabBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${env:S3_BUCKET_NAME}
-        AccessControl: Private
-        CorsConfiguration:
-          CorsRules:
-          - AllowedHeaders: [ '*' ]
-            AllowedMethods: [ 'GET', 'POST', 'PUT', 'DELETE' ]
-            AllowedOrigins: ${self:custom.allowedOrigins}
-            MaxAge: 3000
     LogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
@@ -76,9 +54,6 @@ resources:
 plugins:
 - serverless-esbuild
 - serverless-dotenv-plugin
-# Should be comment code before deploy on aws
-# After aws deployed, uncomment code and deploy again to keep the latest file
-# - serverless-s3-cleaner
 
 custom:
   esbuild:
@@ -89,13 +64,7 @@ custom:
     sourcemap: false
     exclude: [ "aws-sdk" ]
   allowedOrigins:
-    - https://vocab-management.firebaseapp.com/
-    - http://localhost:4030
+  - https://vocab-management.firebaseapp.com/
+  - http://localhost:4030
   dotenv:
     path: ./.env
-  # Clean up old files in S3 bucket and keep the one latest file
-  s3Cleaner:
-    buckets:
-    - ${env:S3_BUCKET_NAME}
-    prefix: serverless/
-    keepLatest: true
