@@ -11,12 +11,16 @@ serverless config credentials --provider aws --key YOUR_ACCESS_KEY --secret YOUR
 
 ## Deployment on lambda by `serverless`
 ```
+# Run print before deploy
+serverless print
+
+# Deploy
 serverless deploy --stage dev
 ```
 
 ## Remove all reources on aws
+## Need to delete all object in S3 before run this command
 ```
-# Need to delete all object in S3 before run this command
 serverless remove --stage dev
 ```
 

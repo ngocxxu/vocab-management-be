@@ -11,10 +11,9 @@ provider:
   timeout: 25
   memorySize: 256
   httpApi:
-    useProviderTags: true
     payload: '2.0'
     cors:
-      allowedOrigins: ${env:ALLOWED_ORIGINS}
+      allowedOrigins: ${self:custom.allowedOrigins}
       allowedHeaders: [ '*' ]
       allowedMethods: [ 'GET', 'POST', 'PUT', 'DELETE' ]
       maxAge: 3000
@@ -66,7 +65,7 @@ resources:
           CorsRules:
           - AllowedHeaders: [ '*' ]
             AllowedMethods: [ 'GET', 'POST', 'PUT', 'DELETE' ]
-            AllowedOrigins: ${env:ALLOWED_ORIGINS}
+            AllowedOrigins: ${self:custom.allowedOrigins}
             MaxAge: 3000
     LogGroup:
       Type: AWS::Logs::LogGroup
@@ -89,6 +88,9 @@ custom:
     format: "esm"
     sourcemap: false
     exclude: [ "aws-sdk" ]
+  allowedOrigins:
+    - https://vocab-management.firebaseapp.com/
+    - http://localhost:4030
   dotenv:
     path: ./.env
   # Clean up old files in S3 bucket and keep the one latest file
