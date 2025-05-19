@@ -1,6 +1,8 @@
 service: vocab-management-be
 frameworkVersion: '3'
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -12,7 +14,7 @@ provider:
     useProviderTags: true
     payload: '2.0'
     cors:
-      allowedOrigins: ${ALLOWED_ORIGINS}
+      allowedOrigins: ${env:ALLOWED_ORIGINS}
       allowedHeaders: [ '*' ]
       allowedMethods: [ 'GET', 'POST', 'PUT', 'DELETE' ]
       maxAge: 3000
@@ -37,14 +39,14 @@ provider:
         - s3:DeleteObject
         - s3:ListBucket
         Resource:
-        - "arn:aws:s3:::${S3_BUCKET_NAME}"
-        - "arn:aws:s3:::${S3_BUCKET_NAME}/*"
+        - "arn:aws:s3:::${env:S3_BUCKET_NAME}"
+        - "arn:aws:s3:::${env:S3_BUCKET_NAME}/*"
 
 functions:
   api:
     handler: dist/lambda.handler
     environment:
-      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      S3_BUCKET_NAME: ${env:S3_BUCKET_NAME}
     events:
     - httpApi:
         path: /{proxy+}
@@ -58,18 +60,18 @@ resources:
     VocabBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${S3_BUCKET_NAME}
+        BucketName: ${env:S3_BUCKET_NAME}
         AccessControl: Private
         CorsConfiguration:
           CorsRules:
           - AllowedHeaders: [ '*' ]
             AllowedMethods: [ 'GET', 'POST', 'PUT', 'DELETE' ]
-            AllowedOrigins: ${ALLOWED_ORIGINS}
+            AllowedOrigins: ${env:ALLOWED_ORIGINS}
             MaxAge: 3000
     LogGroup:
       Type: AWS::Logs::LogGroup
       Properties:
-        LogGroupName: "/aws/lambda/${self:service}-${self:provider.stage}-api"
+        LogGroupName: "/aws/lambda/${self:service}-${self:provider.stage}-api-${sls:instanceId}"
         RetentionInDays: 7
 
 plugins:
@@ -89,10 +91,9 @@ custom:
     exclude: [ "aws-sdk" ]
   dotenv:
     path: ./.env
-
   # Clean up old files in S3 bucket and keep the one latest file
   s3Cleaner:
     buckets:
-    - ${S3_BUCKET_NAME}
+    - ${env:S3_BUCKET_NAME}
     prefix: serverless/
     keepLatest: true
