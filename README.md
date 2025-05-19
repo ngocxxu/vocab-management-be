@@ -1,4 +1,22 @@
-# Deployment
+# Deplyment by vercel
+## Test locally
+```
+vercel dev
+```
+
+## Deploy
+- But the url name will be complicated
+```
+vercel
+```
+
+- For the clean url name, we need to deploy on prod
+```
+vercel --prod
+```
+
+
+# Deployment by serverless
 ## Install serverless
 ```
 brew install serverless
