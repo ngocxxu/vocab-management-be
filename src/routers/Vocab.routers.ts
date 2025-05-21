@@ -8,6 +8,7 @@ import {
   removeMultiVocab,
   removeVocab,
   updateVocab,
+  addMultiVocab,
 } from '../controllers/Vocab.controllers.js';
 
 const router = express.Router();
@@ -21,6 +22,8 @@ router.get('/subject/:subjectId', getAllVocabByOneSubject);
 router.get('/random/:amount', randomVocab);
 
 router.post('/', addVocab);
+
+router.post('/bulk', addMultiVocab);
 
 router.put('/:id', updateVocab);
 

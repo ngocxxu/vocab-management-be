@@ -193,6 +193,42 @@ export const addVocab = async (
   }
 };
 
+export const addMultiVocab = async (
+  req: TRequest<{}, TAddVocabReq[], {}>,
+  res: Response
+) => {
+  try {
+    // Validate input array
+    if (!Array.isArray(req.body) || req.body.length === 0) {
+      return res
+        .status(400)
+        .json({ error: 'Invalid or empty vocabulary array' });
+    }
+
+    // Bulk insert vocab entries
+    const vocabEntries = req.body.map((vocab) => ({
+      sourceLanguage: vocab.sourceLanguage,
+      targetLanguage: vocab.targetLanguage,
+      textSource: vocab.textSource,
+      textTarget: vocab.textTarget,
+    }));
+
+    const result = await VocabModel.insertMany(vocabEntries, {
+      ordered: false,
+    });
+
+    await clearRedisCache([
+      ALL_VOCAB_CACHE_PREFIX,
+      RANDOM_VOCAB_CACHE_PREFIX,
+      VOCAB_CACHE_PREFIX,
+    ]);
+
+    res.status(200).json(result);
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 export const updateVocab = async (
   req: TRequest<TParams, TUpdateVocabReq, {}>,
   res: Response
