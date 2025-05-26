@@ -135,4 +135,6 @@ process.on('SIGINT', async () => {
 
 startServer();
 
-export const handler = ServerlessHttp(app);
+// export const handler = ServerlessHttp(app);
+
+export default app;
