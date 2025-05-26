@@ -1,3 +1,21 @@
+# Deployment by Netlify
+## Test locally
+``` 
+netlify dev
+```
+
+## Deploy
+```
+netlify deploy --prod
+```
+
+## Endpoint
+- After deploying, we have to wait for a while to setup netlify lambda
+``` 
+http://localhost:8888/.netlify/functions/main/app1/vocab
+```
+
+
 # Deplyment by vercel
 ## Test locally
 ```
