@@ -21,18 +21,15 @@ const databaseENV = process.env.DATABASE_URL ?? '';
 const redisENV = process.env.REDIS_URL ?? 'redis://localhost:6379';
 const isDevEnvironment =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+const devOrigins = process.env.DEV_ALLOWED_ORIGINS?.split(',') || [];
+const prodOrigins = process.env.PROD_ALLOWED_ORIGINS?.split(',') || [];
 
 const app = express();
 
 app.use(cookieParser());
 app.use(
   cors({
-    origin: isDevEnvironment
-      ? 'http://localhost:5173'
-      : [
-          'https://vocab-management.firebaseapp.com',
-          'https://vocab-management-fe.vercel.app',
-        ],
+    origin: isDevEnvironment ? devOrigins : prodOrigins,
     credentials: true, // Allow cookie
   })
 );
