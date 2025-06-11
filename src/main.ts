@@ -66,7 +66,7 @@ io.use(socketAuthMiddleware);
 // Socket.IO connection handling
 io.on('connection', (socket) => {
   socketHandlers(
-    socket as Socket & { user: { id: string; email: string } },
+    socket as Socket & { user: { userId: string; email: string } },
     io
   );
 });

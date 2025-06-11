@@ -3,6 +3,9 @@ import { SortOrder } from 'mongoose';
 import { EPagination } from '../enums/Global.enums.js';
 import { VocabModel } from '../models/Vocab.models.js';
 import {
+  EActionSocket,
+  EEmitSocket,
+  ETypeSocket,
   TDataPaginationRes,
   TParams,
   TRequest,
@@ -23,7 +26,12 @@ import {
   RANDOM_VOCAB_CACHE_PREFIX,
   VOCAB_CACHE_PREFIX,
 } from '../utils/redis.js';
-import { sendVocabNotification } from '../utils/socket.js';
+import { sendNotification } from '../utils/socket.js';
+
+const { CREATED, DELETED, MULTI_CREATED, MULTI_DELETED, UPDATED } =
+  EActionSocket;
+const { VOCAB } = ETypeSocket;
+const { VOCAB_NOTIFICATION } = EEmitSocket;
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,
@@ -193,11 +201,14 @@ export const addVocab = async (
       return res.status(404).json({ message: 'Vocab not found' });
     }
 
+    console.log('helooooo');
+
     // Send notification via socket
-    sendVocabNotification('created', {
+    await sendNotification(VOCAB, CREATED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been created`,
       word: result.textSource,
       userEmail: req.user.email,
+      userId: req.user._id,
     });
 
     res.status(200).json(result);
@@ -240,9 +251,10 @@ export const addMultiVocab = async (
     }
 
     // Send notification via socket
-    sendVocabNotification('multi-created', {
+    sendNotification(VOCAB, MULTI_CREATED, VOCAB_NOTIFICATION, {
       message: `${req.body.length} vocab have been created`,
       userEmail: req.user.email,
+      userId: req.user._id,
     });
 
     res.status(200).json(result);
@@ -274,11 +286,11 @@ export const updateVocab = async (
     }
 
     // Send notification via socket
-    sendVocabNotification('updated', {
+    sendNotification(VOCAB, UPDATED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been updated`,
-      vocabId: req.params.id,
       word: result.textSource,
       userEmail: req.user.email,
+      userId: req.user._id,
     });
 
     res.status(200).json(result);
@@ -305,11 +317,11 @@ export const removeVocab = async (
     }
 
     // Send notification via socket
-    sendVocabNotification('deleted', {
+    sendNotification(VOCAB, DELETED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been deleted`,
-      vocabId: req.params.id,
       word: result.textSource,
       userEmail: req.user.email,
+      userId: req.user._id,
     });
 
     res.status(200).json(result);
@@ -334,10 +346,10 @@ export const removeMultiVocab = async (
     ]);
 
     // Send notification via socket
-    sendVocabNotification('multi-deleted', {
+    sendNotification(VOCAB, MULTI_DELETED, VOCAB_NOTIFICATION, {
       message: `${req.body.length} vocab have been deleted`,
-      vocabIds: req.body,
       userEmail: req.user.email,
+      userId: req.user._id,
     });
 
     res.status(200).json(result);
