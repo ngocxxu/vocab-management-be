@@ -1,7 +1,7 @@
 import { socketIO } from '../main';
 
 export const sendVocabNotification = (
-  type: 'deleted' | 'created' | 'updated' | 'multi-deleted',
+  type: 'deleted' | 'created' | 'updated' | 'multi-deleted' | 'multi-created',
   data: {
     message: string;
     vocabId?: string;

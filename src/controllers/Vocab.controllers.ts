@@ -175,7 +175,7 @@ export const addVocab = async (
   res: Response
 ) => {
   try {
-    const result = new VocabModel({
+    const result = await new VocabModel({
       sourceLanguage: req.body.sourceLanguage,
       targetLanguage: req.body.targetLanguage,
       textSource: req.body.textSource,
@@ -188,12 +188,22 @@ export const addVocab = async (
       VOCAB_CACHE_PREFIX,
     ]);
 
+    if (!result) {
+      return res.status(404).json({ message: 'Vocab not found' });
+    }
+
+    // Send notification via socket
+    sendVocabNotification('created', {
+      message: `Vocab "${result.textSource}" has been created`,
+      word: result.textSource,
+      userEmail: req.user.email,
+    });
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
   }
 };
-
 export const addMultiVocab = async (
   req: TRequest<{}, TAddVocabReq[], {}>,
   res: Response
@@ -224,6 +234,16 @@ export const addMultiVocab = async (
       VOCAB_CACHE_PREFIX,
     ]);
 
+    if (!result) {
+      return res.status(404).json({ message: 'Vocab not found' });
+    }
+
+    // Send notification via socket
+    sendVocabNotification('multi-created', {
+      message: `${req.body.length} vocab have been created`,
+      userEmail: req.user.email,
+    });
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -247,6 +267,19 @@ export const updateVocab = async (
       RANDOM_VOCAB_CACHE_PREFIX,
       VOCAB_CACHE_PREFIX,
     ]);
+
+    if (!result) {
+      return res.status(404).json({ message: 'Vocab not found' });
+    }
+
+    // Send notification via socket
+    sendVocabNotification('updated', {
+      message: `Vocab "${result.textSource}" has been updated`,
+      vocabId: req.params.id,
+      word: result.textSource,
+      userEmail: req.user.email,
+    });
+
     res.status(200).json(result);
   } catch (err) {
     handleError(err, res);
@@ -298,6 +331,13 @@ export const removeMultiVocab = async (
       RANDOM_VOCAB_CACHE_PREFIX,
       VOCAB_CACHE_PREFIX,
     ]);
+
+    // Send notification via socket
+    sendVocabNotification('multi-deleted', {
+      message: `${req.body.length} vocab have been deleted`,
+      vocabIds: req.body,
+      userEmail: req.user.email,
+    });
 
     res.status(200).json(result);
   } catch (err) {
