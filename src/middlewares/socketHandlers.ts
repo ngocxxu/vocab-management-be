@@ -1,10 +1,10 @@
 import { Server, Socket } from 'socket.io';
 
 export const socketHandlers = (
-  socket: Socket & { user: { id: string; email: string } },
+  socket: Socket & { user: { userId: string; email: string } },
   io: Server
 ) => {
-  const userId = socket.user.id;
+  const userId = socket.user.userId;
 
   console.log(`User ${userId} connected:`, socket.id);
 
@@ -14,7 +14,7 @@ export const socketHandlers = (
 
   // Join all users room
   // This room can be used for broadcasting messages to all users
-  socket.join('all-users');     
+  socket.join('all-users');
 
   // Handle disconnect
   socket.on('disconnect', () => {
@@ -23,7 +23,7 @@ export const socketHandlers = (
 
   // BE receives a message from FE and sends it to the target room
   socket.on('send-message', (data) => {
-    const senderId = socket.user.id;
+    const senderId = socket.user.userId;
     const senderName = socket.user.email;
 
     io.to(data.targetRoom).emit('new-message', {
