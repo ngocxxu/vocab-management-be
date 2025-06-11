@@ -5,6 +5,7 @@ import { VocabModel } from '../models/Vocab.models.js';
 import {
   TDataPaginationRes,
   TParams,
+  TRequest,
   TRequestWithUser,
 } from '../types/Global.types.js';
 import {
@@ -25,7 +26,7 @@ import {
 import { sendVocabNotification } from '../utils/socket.js';
 
 export const getAllVocab = async (
-  req: TRequestWithUser<{}, {}, TGetAllVocabReq>,
+  req: TRequest<{}, {}, TGetAllVocabReq>,
   res: Response<TDataPaginationRes<TVocabRes[]>>
 ) => {
   try {
@@ -106,7 +107,7 @@ export const getAllVocab = async (
 };
 
 export const getVocab = async (
-  req: TRequestWithUser<TParams, {}, {}>,
+  req: TRequest<TParams, {}, {}>,
   res: Response<TVocabRes | null>
 ) => {
   try {
@@ -123,7 +124,7 @@ export const getVocab = async (
   }
 };
 export const randomVocab = async (
-  req: TRequestWithUser<TRandomVocabReq, {}, {}>,
+  req: TRequest<TRandomVocabReq, {}, {}>,
   res: Response<TRandomVocabRes>
 ) => {
   try {
@@ -139,7 +140,7 @@ export const randomVocab = async (
 };
 
 export const getAllVocabByOneSubject = async (
-  req: TRequestWithUser<{ subjectId: string }, {}, {}>,
+  req: TRequest<{ subjectId: string }, {}, {}>,
   res: Response
 ) => {
   try {
