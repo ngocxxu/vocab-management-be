@@ -5,7 +5,7 @@ import { VocabModel } from '../models/Vocab.models.js';
 import {
   TDataPaginationRes,
   TParams,
-  TRequest,
+  TRequestWithUser,
 } from '../types/Global.types.js';
 import {
   TAddVocabReq,
@@ -25,7 +25,7 @@ import {
 import { sendVocabNotification } from '../utils/socket.js';
 
 export const getAllVocab = async (
-  req: TRequest<{}, {}, TGetAllVocabReq>,
+  req: TRequestWithUser<{}, {}, TGetAllVocabReq>,
   res: Response<TDataPaginationRes<TVocabRes[]>>
 ) => {
   try {
@@ -106,7 +106,7 @@ export const getAllVocab = async (
 };
 
 export const getVocab = async (
-  req: TRequest<TParams, {}, {}>,
+  req: TRequestWithUser<TParams, {}, {}>,
   res: Response<TVocabRes | null>
 ) => {
   try {
@@ -123,7 +123,7 @@ export const getVocab = async (
   }
 };
 export const randomVocab = async (
-  req: TRequest<TRandomVocabReq, {}, {}>,
+  req: TRequestWithUser<TRandomVocabReq, {}, {}>,
   res: Response<TRandomVocabRes>
 ) => {
   try {
@@ -139,7 +139,7 @@ export const randomVocab = async (
 };
 
 export const getAllVocabByOneSubject = async (
-  req: TRequest<{ subjectId: string }, {}, {}>,
+  req: TRequestWithUser<{ subjectId: string }, {}, {}>,
   res: Response
 ) => {
   try {
@@ -171,7 +171,7 @@ export const getAllVocabByOneSubject = async (
 };
 
 export const addVocab = async (
-  req: TRequest<{}, TAddVocabReq, {}>,
+  req: TRequestWithUser<{}, TAddVocabReq, {}>,
   res: Response
 ) => {
   try {
@@ -205,7 +205,7 @@ export const addVocab = async (
   }
 };
 export const addMultiVocab = async (
-  req: TRequest<{}, TAddVocabReq[], {}>,
+  req: TRequestWithUser<{}, TAddVocabReq[], {}>,
   res: Response
 ) => {
   try {
@@ -251,7 +251,7 @@ export const addMultiVocab = async (
 };
 
 export const updateVocab = async (
-  req: TRequest<TParams, TUpdateVocabReq, {}>,
+  req: TRequestWithUser<TParams, TUpdateVocabReq, {}>,
   res: Response
 ) => {
   try {
@@ -287,7 +287,7 @@ export const updateVocab = async (
 };
 
 export const removeVocab = async (
-  req: TRequest<TParams, {}, {}>,
+  req: TRequestWithUser<TParams, {}, {}>,
   res: Response
 ) => {
   try {
@@ -318,7 +318,7 @@ export const removeVocab = async (
 };
 
 export const removeMultiVocab = async (
-  req: TRequest<{}, string[], {}>,
+  req: TRequestWithUser<{}, string[], {}>,
   res: Response
 ) => {
   try {

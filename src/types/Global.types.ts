@@ -28,11 +28,17 @@ export type TRequest<TParams = {}, TBody = {}, TQuery = {}> = Request<
   {},
   TBody,
   TQuery
+>;
+
+export type TRequestWithUser<TParams = {}, TBody = {}, TQuery = {}> = TRequest<
+  TParams,
+  TBody,
+  TQuery
 > & {
   user: TUserInfoToken;
 };
-export type TResponse<T> = Response<TDataPaginationRes<T>>;
 
+export type TResponse<T> = Response<TDataPaginationRes<T>>;
 export type TParams = {
   id: string;
 };
