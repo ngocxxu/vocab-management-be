@@ -1,6 +1,8 @@
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 import express from 'express';
+import { createServer } from 'http';
+import { Server, Socket } from 'socket.io';
 import redis from 'redis';
 import mongoose from 'mongoose';
 import comment from './routers/Comment.routers.js';
@@ -13,6 +15,8 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import './utils/reminder/scheduler.js';
 import { authenticateToken } from './middlewares/authenticateToken.js';
+import { socketAuthMiddleware } from './middlewares/socketAuthMiddleware.js';
+import { socketHandlers } from './middlewares/socketHandlers.js';
 
 dotenv.config();
 
@@ -25,12 +29,25 @@ const devOrigins = process.env.DEV_ALLOWED_ORIGINS?.split(',') || [];
 const prodOrigins = process.env.PROD_ALLOWED_ORIGINS?.split(',') || [];
 
 const app = express();
+const server = createServer(app);
+
+// Create Socket.IO instance
+const io = new Server(server, {
+  cors: {
+    origin: isDevEnvironment ? devOrigins : prodOrigins,
+    credentials: true,
+    methods: ['GET', 'POST'],
+  },
+});
+
+// Export io for use in other modules
+export const socketIO = io;
 
 app.use(cookieParser());
 app.use(
   cors({
     origin: isDevEnvironment ? devOrigins : prodOrigins,
-    credentials: true, // Allow cookie
+    credentials: true,
   })
 );
 app.use(helmet());
@@ -43,12 +60,16 @@ app.use('/app1/vocab', authenticateToken, vocab);
 app.use('/app1/vocabTrainer', authenticateToken, vocabTrainer);
 app.use('/app1/vocabSubject', authenticateToken, vocabSubject);
 
-// app.use('/.netlify/functions/main/app1/comment', authenticateToken, comment);
-// app.use('/.netlify/functions/main/app1/user', user);
-// app.use('/.netlify/functions/main/app1/vocab', authenticateToken, vocab);
-// app.use('/.netlify/functions/main/app1/vocabTrainer', authenticateToken, vocabTrainer);
-// app.use('/.netlify/functions/main/app1/vocabSubject', authenticateToken, vocabSubject);
+// Socket.IO setup with authentication middleware
+io.use(socketAuthMiddleware);
 
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  socketHandlers(
+    socket as Socket & { user: { id: string; email: string } },
+    io
+  );
+});
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
@@ -81,7 +102,8 @@ async function startServer() {
     await mongoose.connect(databaseENV);
     console.log('Connected to DB');
 
-    app.listen(port, () => {
+    // Start the server
+    server.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
   } catch (err) {
@@ -139,7 +161,5 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
-
-// export const handler = ServerlessHttp(app);
 
 export default app;

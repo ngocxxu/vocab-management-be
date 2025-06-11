@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { TUserInfoToken } from './User.types';
 
 export type TOption = {
   label: string;
@@ -27,7 +28,9 @@ export type TRequest<TParams = {}, TBody = {}, TQuery = {}> = Request<
   {},
   TBody,
   TQuery
->;
+> & {
+  user: TUserInfoToken;
+};
 export type TResponse<T> = Response<TDataPaginationRes<T>>;
 
 export type TParams = {

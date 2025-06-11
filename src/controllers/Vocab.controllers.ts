@@ -22,6 +22,7 @@ import {
   RANDOM_VOCAB_CACHE_PREFIX,
   VOCAB_CACHE_PREFIX,
 } from '../utils/redis.js';
+import { sendVocabNotification } from '../utils/socket.js';
 
 export const getAllVocab = async (
   req: TRequest<{}, {}, TGetAllVocabReq>,
@@ -264,6 +265,18 @@ export const removeVocab = async (
       RANDOM_VOCAB_CACHE_PREFIX,
       VOCAB_CACHE_PREFIX,
     ]);
+
+    if (!result) {
+      return res.status(404).json({ message: 'Vocab not found' });
+    }
+
+    // Send notification via socket
+    sendVocabNotification('deleted', {
+      message: `Vocab "${result.textSource}" has been deleted`,
+      vocabId: req.params.id,
+      word: result.textSource,
+      userEmail: req.user.email,
+    });
 
     res.status(200).json(result);
   } catch (err) {
