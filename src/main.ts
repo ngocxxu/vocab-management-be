@@ -10,6 +10,7 @@ import vocab from './routers/Vocab.routers.js';
 import user from './routers/User.routers.js';
 import vocabTrainer from './routers/VocabTrainer.routers.js';
 import vocabSubject from './routers/VocabSubject.routers.js';
+import notification from './routers/Notification.routers.js';
 import winston from 'winston';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -59,6 +60,7 @@ app.use('/app1/user', user);
 app.use('/app1/vocab', authenticateToken, vocab);
 app.use('/app1/vocabTrainer', authenticateToken, vocabTrainer);
 app.use('/app1/vocabSubject', authenticateToken, vocabSubject);
+app.use('/app1/notification', authenticateToken, notification);
 
 // Socket.IO setup with authentication middleware
 io.use(socketAuthMiddleware);

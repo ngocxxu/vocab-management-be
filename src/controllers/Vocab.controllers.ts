@@ -201,8 +201,6 @@ export const addVocab = async (
       return res.status(404).json({ message: 'Vocab not found' });
     }
 
-    console.log('helooooo');
-
     // Send notification via socket
     await sendNotification(VOCAB, CREATED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been created`,

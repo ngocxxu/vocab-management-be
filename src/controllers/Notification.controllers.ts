@@ -4,7 +4,7 @@ import { NotificationModel } from '../models/Notification.models.js';
 
 export const markNotificationAsRead = async (req: Request, res: Response) => {
   try {
-    const { userId, notificationId } = req.query;
+    const { userId, notificationId } = req.body;
     const result = await NotificationModel.updateOne(
       {
         _id: notificationId,
@@ -27,9 +27,9 @@ export const markNotificationAsRead = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllNotifications = async (req: Request, res: Response) => {
+export const getAllNotification = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.query;
+    const { userId } = req.params;
     const notifications = await NotificationModel.find({
       recipients: { $in: [userId] },
       isActive: true,
@@ -41,9 +41,9 @@ export const getAllNotifications = async (req: Request, res: Response) => {
   }
 };
 
-export const getUnreadNotifications = async (req: Request, res: Response) => {
+export const getUnreadNotification = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.query;
+    const { userId } = req.params;
     const result = await NotificationModel.find({
       recipients: { $in: [userId] },
       'readBy.userId': { $ne: userId },
@@ -58,7 +58,7 @@ export const getUnreadNotifications = async (req: Request, res: Response) => {
 
 export const getUnreadCount = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.query;
+    const { userId } = req.params;
     const count = await NotificationModel.countDocuments({
       recipients: { $in: [userId] },
       'readBy.userId': { $ne: userId },
