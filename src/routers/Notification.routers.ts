@@ -3,6 +3,7 @@ import {
   getAllNotification,
   getUnreadCount,
   getUnreadNotification,
+  markAllNotificationAsRead,
   markNotificationAsRead,
 } from '../controllers/Notification.controllers.js';
 
@@ -14,6 +15,8 @@ router.get('/unread/:userId', getUnreadNotification);
 
 router.get('/unread-count/:userId', getUnreadCount);
 
-router.put('/', markNotificationAsRead);
+router.put('/mark', markNotificationAsRead);
+
+router.put('/mark-all', markAllNotificationAsRead);
 
 export default router;

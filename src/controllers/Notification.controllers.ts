@@ -27,6 +27,46 @@ export const markNotificationAsRead = async (req: Request, res: Response) => {
   }
 };
 
+export const markAllNotificationAsRead = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { userId } = req.body;
+
+    const unreadNotifications = await NotificationModel.find({
+      recipients: { $in: [userId] },
+      'readBy.userId': { $ne: userId },
+    });
+
+    const updatePromises = unreadNotifications.map((notification) =>
+      NotificationModel.updateOne(
+        { _id: notification._id },
+        {
+          $push: {
+            readBy: {
+              userId,
+              readAt: new Date(),
+            },
+          },
+        }
+      )
+    );
+
+    const results = await Promise.all(updatePromises);
+
+    res.status(200).json({
+      modifiedCount: results.reduce(
+        (sum, result) => sum + result.modifiedCount,
+        0
+      ),
+      matchedCount: unreadNotifications.length,
+    });
+  } catch (err) {
+    handleError(err, res);
+  }
+};
+
 export const getAllNotification = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
