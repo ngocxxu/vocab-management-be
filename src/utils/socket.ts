@@ -21,7 +21,6 @@ export const sendNotification = async (
       const notification = new NotificationModel({
         type,
         action,
-        message: data.message,
         data,
         recipients: userIds,
         readBy: [],
@@ -37,7 +36,6 @@ export const sendNotification = async (
         id: notification._id,
         type,
         action,
-        message: data.message,
         timestamp: new Date(),
         data,
       });

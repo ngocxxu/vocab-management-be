@@ -48,12 +48,14 @@ export const loginUser = async (
       return res.status(400).json({ message: 'Invalid password' });
 
     const accessToken = generateAccessToken({
-      _id: user._id.toString(),
+      userId: user._id.toString(),
       email: user.email,
+      name: user.name,
     });
     const refreshToken = generateRefreshToken({
-      _id: user._id.toString(),
+      userId: user._id.toString(),
       email: user.email,
+      name: user.name,
     });
 
     // Save refresh token
@@ -71,7 +73,12 @@ export const loginUser = async (
       maxAge: 7 * 24 * 60 * 60 * 1000, // TTL 7 days
     });
 
-    res.json({ accessToken, email: user.email, name: user.name });
+    res.json({
+      accessToken,
+      email: user.email,
+      name: user.name,
+      userId: user._id,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -106,8 +113,9 @@ export const refreshTokenUser = async (
     }
 
     const accessToken = generateAccessToken({
-      _id: user._id.toString(),
+      userId: user._id.toString(),
       email: user.email,
+      name: user.name,
     });
 
     tokenDoc.expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // TTL 7 days
@@ -122,7 +130,7 @@ export const refreshTokenUser = async (
 
 function generateAccessToken(user: TUserInfoToken) {
   return jwt.sign(
-    { userId: user._id, email: user.email },
+    { userId: user.userId, email: user.email, name: user.name },
     process.env.ACCESS_TOKEN_SECRET ?? '',
     { expiresIn: ACCESS_TOKEN_TIME }
   );
@@ -130,7 +138,7 @@ function generateAccessToken(user: TUserInfoToken) {
 
 function generateRefreshToken(user: TUserInfoToken) {
   return jwt.sign(
-    { userId: user._id, email: user.email },
+    { userId: user.userId, email: user.email, name: user.name },
     process.env.REFRESH_TOKEN_SECRET ?? '',
     { expiresIn: REFRESH_TOKEN_TIME }
   );

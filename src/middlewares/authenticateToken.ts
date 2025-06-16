@@ -15,8 +15,10 @@ export const authenticateToken = async (
 
   try {
     const user = await verifyToken(token);
+
     (req as express.Request & { user: TUserInfoToken }).user =
       user as TUserInfoToken;
+    console.log({ user });
     next();
   } catch (error: any) {
     if (error.message === 'Token expired') {

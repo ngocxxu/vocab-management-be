@@ -1,19 +1,19 @@
-export type TUserInfoToken = { _id: string; email: string }
+export type TUserInfoToken = { userId: string; name: string; email: string };
 
 export type TRegisterUserReq = {
-  email: string
+  email: string;
   password: string;
-  name:string
-}
+  name: string;
+};
 
 export type TRefreshToken = {
-  refreshToken: string
-}
+  refreshToken: string;
+};
 
 export type TLogoutAllDeviceUserReq = {
-  userId: string
-}
+  userId: string;
+};
 
 export type TLoginUserRes = {
-  accessToken: string
-}
+  accessToken: string;
+};

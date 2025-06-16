@@ -205,8 +205,7 @@ export const addVocab = async (
     await sendNotification(VOCAB, CREATED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been created`,
       word: result.textSource,
-      userEmail: req.user.email,
-      userId: req.user._id,
+      ...req.user,
     });
 
     res.status(200).json(result);
@@ -251,8 +250,7 @@ export const addMultiVocab = async (
     // Send notification via socket
     sendNotification(VOCAB, MULTI_CREATED, VOCAB_NOTIFICATION, {
       message: `${req.body.length} vocab have been created`,
-      userEmail: req.user.email,
-      userId: req.user._id,
+      ...req.user,
     });
 
     res.status(200).json(result);
@@ -287,8 +285,7 @@ export const updateVocab = async (
     sendNotification(VOCAB, UPDATED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been updated`,
       word: result.textSource,
-      userEmail: req.user.email,
-      userId: req.user._id,
+      ...req.user,
     });
 
     res.status(200).json(result);
@@ -318,8 +315,7 @@ export const removeVocab = async (
     sendNotification(VOCAB, DELETED, VOCAB_NOTIFICATION, {
       message: `Vocab "${result.textSource}" has been deleted`,
       word: result.textSource,
-      userEmail: req.user.email,
-      userId: req.user._id,
+      ...req.user,
     });
 
     res.status(200).json(result);
@@ -346,8 +342,7 @@ export const removeMultiVocab = async (
     // Send notification via socket
     sendNotification(VOCAB, MULTI_DELETED, VOCAB_NOTIFICATION, {
       message: `${req.body.length} vocab have been deleted`,
-      userEmail: req.user.email,
-      userId: req.user._id,
+      ...req.user,
     });
 
     res.status(200).json(result);

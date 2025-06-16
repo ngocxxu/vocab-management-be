@@ -12,10 +12,6 @@ const schema = new mongoose.Schema(
       required: true,
       enum: ['created', 'updated', 'deleted', 'multi-created', 'multi-deleted'],
     },
-    message: {
-      type: String,
-      required: true,
-    },
     recipients: [
       {
         type: mongoose.Schema.Types.ObjectId,
