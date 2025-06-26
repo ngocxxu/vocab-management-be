@@ -30,7 +30,6 @@ const itemTextTarget = new mongoose.Schema({
   },
   wordType: {
     type: String,
-    required: true,
   },
   explanationSource: {
     type: String,
